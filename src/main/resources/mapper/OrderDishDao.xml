@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.ode.dao.OrderDishDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.example.ode.entity.OrderDishEntity" id="orderDishMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="dishId" column="dish_id"/>
+        <result property="state" column="state"/>
+        <result property="amount" column="amount"/>
+        <result property="addTime" column="add_time"/>
+        <result property="extra" column="extra"/>
+    </resultMap>
+
+
+</mapper>
