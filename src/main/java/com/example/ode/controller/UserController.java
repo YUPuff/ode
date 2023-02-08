@@ -1,16 +1,12 @@
 package com.example.ode.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
 
 import com.example.ode.common.Result;
-import com.example.ode.dto.user.UserIns;
+import com.example.ode.dto.admin.AdminIns;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.ode.entity.UserEntity;
-import com.example.ode.service.UserService;
+import com.example.ode.service.AdminService;
 
 
 
@@ -22,20 +18,25 @@ import com.example.ode.service.UserService;
 @RequestMapping("user")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private AdminService adminService;
 
     /**
      * 借助微信平台登录，第一次登录默认注册为普通用户
-     * @param map
+     * @param ins
      * @return
      */
     @PostMapping("/login")
-    public Result login(UserIns ins){
+    public Result login(AdminIns ins){
         try{
-            return Result.success(userService.login(ins));
+            return Result.success(adminService.login(ins));
         }catch (Exception e){
             return Result.failure(e.getMessage());
         }
+    }
+
+    @RequestMapping("/test")
+    public Result test(String code){
+        return Result.success(adminService.login(code));
     }
 
 
