@@ -23,21 +23,9 @@ import java.util.Map;
 public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> implements AdminService {
 
 
-    @Value("${wxmini.appid}")
-    private String appid;
-
-    @Value("${wxmini.secret}")
-    private String secret;
-
     @Override
     public Map<String, Object> login(String code) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
-        String repUrl = url.replace("APPID",appid).replace("SECRET",secret).replace("JSCODE",code);
-        String s = HttpUtil.get(repUrl);
-        System.out.println(s);
-        Map<String,Object> map = new HashMap<>();
-        map.put("message",s);
-        return map;
+        return null;
     }
 
     @Override
