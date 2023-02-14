@@ -1,5 +1,6 @@
 package com.example.ode.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -23,7 +24,7 @@ public class DishEntity implements Serializable {
 	/**
 	 * 菜品Id
 	 */
-	@TableId
+	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "菜品Id")
 	private Integer id;
 	/**

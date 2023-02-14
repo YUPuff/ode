@@ -3,7 +3,7 @@ package com.example.ode.service;
 import cn.hutool.core.codec.Base64;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.ode.constant.RedisKey;
+import com.example.ode.constant.RedisConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class WxService {
      * @throws Exception
      */
     public String wxDecrypt(String encryptedData,String iv,String key) throws Exception {
-        String s = redisTemplate.opsForValue().get(RedisKey.WX_SESSION_ID+key);
+        String s = redisTemplate.opsForValue().get(RedisConstant.WX_SESSION_ID+key);
         JSONObject object = JSON.parseObject(s);
         String sessionKey = (String) object.get("session_key");
         byte[] encryptedData_b = Base64.decode(encryptedData);

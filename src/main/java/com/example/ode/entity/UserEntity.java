@@ -1,7 +1,6 @@
 package com.example.ode.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,7 +27,7 @@ public class UserEntity implements Serializable {
 	/**
 	 * 用户Id
 	 */
-	@TableId
+	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "用户Id")
 	private Long id;
 	/**
@@ -67,11 +66,13 @@ public class UserEntity implements Serializable {
 	 * 是否删除（0：否，1：是）
 	 */
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
+	@TableLogic
 	private Integer isDel;
 	/**
 	 * 创建时间
 	 */
 	@ApiModelProperty(value = "创建时间")
+	@TableField(fill = FieldFill.INSERT)
 	private Date addTime;
 	/**
 	 * 备用

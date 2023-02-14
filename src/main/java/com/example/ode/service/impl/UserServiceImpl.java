@@ -3,8 +3,12 @@ package com.example.ode.service.impl;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.ode.common.MyPage;
 import com.example.ode.common.WxUserInfo;
-import com.example.ode.constant.RedisKey;
+import com.example.ode.constant.RedisConstant;
+import com.example.ode.constant.ResultConstant;
 import com.example.ode.dto.user.UserSearch;
 import com.example.ode.model.WXAuth;
 import com.example.ode.service.WxService;
@@ -22,6 +26,7 @@ import com.example.ode.dao.UserDao;
 import com.example.ode.entity.UserEntity;
 import com.example.ode.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         String s = HttpUtil.get(repUrl);
         // 生成唯一标识并返回给前端临时存储
         String key = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(RedisKey.WX_SESSION_ID+key,s,10, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(RedisConstant.WX_SESSION_ID+key,s,10, TimeUnit.MINUTES);
         return key;
     }
 
@@ -107,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      */
     public UserVO login(UserVO userVO) {
         String token = JWTUtils.sign(userVO.getId());
-        redisTemplate.opsForValue().set(RedisKey.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(RedisConstant.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
         userVO.setToken(token);
         return userVO;
     }
@@ -132,12 +137,28 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     }
 
     @Override
-    public String delete(Integer id) {
-        return null;
+    public String delete(List<Long> ids) {
+        // 逻辑删除
+        int res = userDao.deleteBatchIds(ids);
+        if (res>0) return ResultConstant.SUCCESS;
+        else return ResultConstant.FAILURE;
     }
 
     @Override
-    public List<UserVO> getUser(UserSearch search) {
+    public MyPage<UserVO> getUser(UserSearch search) {
+        IPage<UserEntity> page = new Page<>(search.getPageNum(),10);
+        IPage<UserEntity> userPage = userDao.selectPage(page, new LambdaQueryWrapper<UserEntity>()
+                                                                .like(UserEntity::getName,search.getName())
+                                                                .eq(UserEntity::getGender,search.getGender()));
+
+        List<UserEntity> records = userPage.getRecords();
+        List<UserVO> list = new ArrayList<>();
+        for (UserEntity userEntity:records) {
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(userEntity,userVO);
+            list.add(userVO);
+        }
+
         return null;
     }
 }
