@@ -1,5 +1,6 @@
 package com.example.ode.vo;
 
+import com.example.ode.common.WxUserInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.util.Date;
 /**
  * @ProjectName: project1
  * @Author: lyl
- * @Description:
+ * @Description: 用于前端渲染类
  * @Date: 2023-02-08 17:41
  **/
 @Data
@@ -18,8 +19,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class UserVO {
 
-    @ApiModelProperty(value = "用户Id")
-    private Integer id;
+    @ApiModelProperty(value = "自动生成的id")
+    private Long id;
 
     /**
      * 用户名
@@ -38,5 +39,13 @@ public class UserVO {
      */
     @ApiModelProperty(value = "头像路径")
     private String pic;
+
+
+    // 扩展属性
+    /**
+     * 后端生成的token令牌，用于判断当前用户登录状态
+     */
+    private String token;
+
 
 }

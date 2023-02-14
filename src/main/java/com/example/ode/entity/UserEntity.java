@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.example.ode.common.WxUserInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author yilin
@@ -17,6 +20,8 @@ import lombok.Data;
 @Data
 @TableName("t_user")
 @ApiModel(value = "User对象")
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +30,7 @@ public class UserEntity implements Serializable {
 	 */
 	@TableId
 	@ApiModelProperty(value = "用户Id")
-	private Integer id;
+	private Long id;
 	/**
 	 * 用户唯一标识
 	 */
@@ -36,6 +41,13 @@ public class UserEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "用户名")
 	private String name;
+
+	/**
+	 * 性别
+	 */
+	@ApiModelProperty(value = "性别")
+	private String gender;
+
 	/**
 	 * 省份
 	 */
@@ -66,5 +78,15 @@ public class UserEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "备用")
 	private String extra;
+
+	public UserEntity(WxUserInfo userInfo){
+		this.openId = userInfo.getOpenId();
+		this.name = userInfo.getNickName();
+		this.pic = userInfo.getAvatarUrl();
+		this.province = userInfo.getProvince();
+		this.city = userInfo.getCity();
+		this.gender = userInfo.getGender();
+		this.addTime = new Date();
+	}
 
 }

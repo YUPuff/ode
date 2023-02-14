@@ -2,7 +2,7 @@ package com.example.ode.controller;
 
 
 import com.example.ode.common.Result;
-import com.example.ode.dto.user.UserIns;
+import com.example.ode.model.WXAuth;
 import com.example.ode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +21,16 @@ public class UserController {
     private UserService userService;
 
 
-    @PostMapping("/login")
-    public Result login(UserIns ins){
-        try{
-            return Result.success(userService.login(ins));
-        }catch (Exception e){
-            return Result.failure(e.getMessage());
-        }
+    @PostMapping("/login1")
+    public Result login1(String code){
+        return Result.success(userService.login1(code));
     }
+
+    @PostMapping("/login2")
+    public Result login2(WXAuth wxAuth){
+        return Result.success(userService.login2(wxAuth));
+    }
+
 
     @RequestMapping("/test")
     public Result test(String code){

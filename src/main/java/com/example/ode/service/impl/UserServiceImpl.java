@@ -2,11 +2,15 @@ package com.example.ode.service.impl;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
-import com.example.ode.dto.user.UserIns;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.ode.common.WxUserInfo;
+import com.example.ode.constant.RedisKey;
 import com.example.ode.dto.user.UserSearch;
-import com.example.ode.dto.user.UserUpd;
 import com.example.ode.model.WXAuth;
+import com.example.ode.service.WxService;
+import com.example.ode.util.JWTUtils;
 import com.example.ode.vo.UserVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,9 +22,9 @@ import com.example.ode.dao.UserDao;
 import com.example.ode.entity.UserEntity;
 import com.example.ode.service.UserService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 @Service("userService")
@@ -36,6 +40,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private WxService wxService;
+
+    @Autowired
+    private UserDao userDao;
+
     /**
      * 第一次微信登录请求，这时服务器只能知道用户的openId（哪一个用户）,需要二次请求带上加密数据借助微信服务器获取用户更多信息
      *  1.前端微信小程序发送一串登录code
@@ -46,20 +56,19 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @return
      */
     @Override
-    public Map<String, Object> login1(String code) {
+    public String login1(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
         String repUrl = url.replace("APPID",appid).replace("SECRET",secret).replace("JSCODE",code);
         String s = HttpUtil.get(repUrl);
-
-        System.out.println(s);
-        Map<String,Object> map = new HashMap<>();
-        map.put("message",s);
-        return map;
+        // 生成唯一标识并返回给前端临时存储
+        String key = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(RedisKey.WX_SESSION_ID+key,s,10, TimeUnit.MINUTES);
+        return key;
     }
 
     /**
      * 第二次微信登录请求
-     *  1.前端发送微信小程序生成的加密数据encryptedData和iv，以及第一次登录请求存储的sessionId
+     *  1.前端发送微信小程序生成的加密数据encryptedData和iv，以及第一次登录请求存储的唯一标识key
      *  2.服务器解密数据，并借助微信服务器获取用户详细信息（用户名、性别、openId等）
      *  3.根据openId到数据库中查询用户，如果有则更新已有用户详细信息，没有则添加新用户
      *  4.使用jwt生成token令牌，伴随详细信息传回给前端
@@ -68,22 +77,58 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      */
     @Override
     public UserVO login2(WXAuth wxAuth) {
-        return null;
+        try {
+            String s = wxService.wxDecrypt(wxAuth.getEncryptedData(),wxAuth.getIv(),wxAuth.getKey());
+            WxUserInfo userInfo = JSON.parseObject(s, WxUserInfo.class);
+            String openId = userInfo.getOpenId();
+            UserEntity oldUser = userDao.selectOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getOpenId, openId));
+            UserEntity newUser = new UserEntity(userInfo);
+            if (oldUser == null){
+                // 用户不存在，注册新用户
+                add(newUser);
+            }else{
+                // 用户存在，更新用户信息
+                newUser.setId(oldUser.getId());
+                update(newUser);
+            }
+            // 登录
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(newUser,userVO);
+            return login(userVO);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public UserVO login(UserIns ins) {
-        return null;
+    /**
+     * 利用jwt技术生成token令牌，并临时存储在redis
+     * @param userVO
+     * @return
+     */
+    public UserVO login(UserVO userVO) {
+        String token = JWTUtils.sign(userVO.getId());
+        redisTemplate.opsForValue().set(RedisKey.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
+        userVO.setToken(token);
+        return userVO;
     }
 
-    @Override
-    public UserVO add(UserIns ins) {
-        return null;
+    /**
+     * 添加用户
+     * @param userEntity
+     * @return
+     */
+    public void add(UserEntity userEntity) {
+        userDao.insert(userEntity);
+        // 插入新记录后，userEntity的id会自动赋值
     }
 
-    @Override
-    public UserVO update(UserUpd upd) {
-        return null;
+    /**
+     * 根据用户openId，更新用户最新信息
+     * @param userEntity
+     * @return
+     */
+    public void update(UserEntity userEntity) {
+        userDao.updateById(userEntity);
     }
 
     @Override
