@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +17,7 @@ import lombok.Data;
 @Data
 @TableName("t_comment")
 @ApiModel(value = "Comment对象")
-public class CommentEntity implements Serializable {
+public class CommentEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -62,15 +61,6 @@ public class CommentEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
 	private Integer isDel;
-	/**
-	 * 创建时间
-	 */
-	@ApiModelProperty(value = "创建时间")
-	private Date addTime;
-	/**
-	 * 备用
-	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
+
 
 }

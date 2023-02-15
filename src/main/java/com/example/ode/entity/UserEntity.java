@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "User对象")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity implements Serializable {
+public class UserEntity extends BaseEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -68,25 +68,7 @@ public class UserEntity implements Serializable {
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
 	@TableLogic
 	private Integer isDel;
-	/**
-	 * 创建时间
-	 */
-	@ApiModelProperty(value = "创建时间")
-	@TableField(fill = FieldFill.INSERT)
-	private Date addTime;
 
-	/**
-	 * 修改时间
-	 */
-	@ApiModelProperty(value = "修改时间")
-	@TableField(fill = FieldFill.UPDATE)
-	private Date updTime;
-
-	/**
-	 * 备用
-	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
 
 	public UserEntity(WxUserInfo userInfo){
 		this.openId = userInfo.getOpenId();
@@ -95,7 +77,6 @@ public class UserEntity implements Serializable {
 		this.province = userInfo.getProvince();
 		this.city = userInfo.getCity();
 		this.gender = userInfo.getGender();
-		this.addTime = new Date();
 	}
 
 }

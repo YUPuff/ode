@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
@@ -18,7 +19,7 @@ import lombok.Data;
 @Data
 @TableName("t_order")
 @ApiModel(value = "Order对象")
-public class OrderEntity implements Serializable {
+public class OrderEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -41,22 +42,13 @@ public class OrderEntity implements Serializable {
 	 * 总金额
 	 */
 	@ApiModelProperty(value = "总金额")
-	private Double total;
+	private BigDecimal total;
 
 	/**
 	 * 订单备注
 	 */
 	@ApiModelProperty(value = "订单备注")
 	private String remark;
-	/**
-	 * 创建时间
-	 */
-	@ApiModelProperty(value = "创建时间")
-	private Date addTime;
-	/**
-	 * 备用
-	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
+
 
 }

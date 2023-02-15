@@ -37,6 +37,7 @@ public class TypeEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "分类名")
 	private String name;
+
 	/**
 	 * 备用
 	 */

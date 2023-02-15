@@ -1,8 +1,6 @@
 package com.example.ode.controller;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 
 import com.example.ode.annotation.NoAuth;
@@ -11,9 +9,9 @@ import com.example.ode.dto.admin.AdminIns;
 import com.example.ode.dto.admin.AdminSearch;
 import com.example.ode.dto.admin.AdminUpd;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.ode.entity.AdminEntity;
 import com.example.ode.service.AdminService;
 
 
@@ -30,20 +28,20 @@ public class AdminController {
 
     @RequestMapping("/signup")
     @NoAuth
-    public Result signup(AdminIns ins){
+    public Result signup(@Validated AdminIns ins){
         adminService.signup(ins);
         return Result.success();
     }
 
     @RequestMapping("/login")
     @NoAuth
-    public Result login(AdminIns ins){
+    public Result login(@Validated AdminIns ins){
         return Result.success(adminService.login(ins));
     }
 
 
     @PostMapping("/upd")
-    public Result update(AdminUpd upd){
+    public Result update(@Validated AdminUpd upd){
         adminService.update(upd);
         return Result.success();
     }

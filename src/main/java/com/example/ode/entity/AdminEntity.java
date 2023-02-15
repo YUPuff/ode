@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 @TableName("t_admin")
 @ApiModel(value = "Admin对象")
-public class AdminEntity implements Serializable {
+public class AdminEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -57,19 +57,6 @@ public class AdminEntity implements Serializable {
 	 * 头像路径
 	 */
 	private String pic;
-	/**
-	 * 添加时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private Date addTime;
-	/**
-	 * 修改时间
-	 */
-	@TableField(fill = FieldFill.UPDATE)
-	private Date updTime;
-	/**
-	 * 额外
-	 */
-	private String extra;
+
 
 }

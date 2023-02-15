@@ -8,7 +8,10 @@
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="price" column="price"/>
-        <result property="key" column="key"/>
+        <result property="ingredient" column="ingredient"/>
+        <result property="spicy" column="spicy"/>
+        <result property="salt" column="salt"/>
+        <result property="size" column="size"/>
         <result property="detail" column="detail"/>
         <result property="type" column="type"/>
         <result property="pic" column="pic"/>
@@ -17,6 +20,10 @@
         <result property="updTime" column="upd_time"/>
         <result property="extra" column="extra"/>
     </resultMap>
+
+    <select id="selectMyPage" resultType="com.example.ode.vo.DishVO">
+        SELECT id,name,price,pic,ingredient FROM t_dish ${ew.customSqlSegment}
+    </select>
 
 
 </mapper>

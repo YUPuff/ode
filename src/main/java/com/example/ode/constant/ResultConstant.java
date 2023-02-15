@@ -13,5 +13,7 @@ public class ResultConstant {
 
     public static final String NO_EXIST_EXCEPTION = "账户不存在";
 
+    public static final String DISH_NO_EXIST_EXCEPTION = "菜品不存在";
+
 
 }

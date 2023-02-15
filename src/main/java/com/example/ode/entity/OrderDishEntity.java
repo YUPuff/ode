@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 @TableName("t_order_dish")
 @ApiModel(value = "OrderDish对象")
-public class OrderDishEntity implements Serializable {
+public class OrderDishEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -31,7 +31,7 @@ public class OrderDishEntity implements Serializable {
 	 * 订单id
 	 */
 	@ApiModelProperty(value = "订单id")
-	private Integer orderId;
+	private Long orderId;
 	/**
 	 * 菜品id
 	 */
@@ -47,15 +47,6 @@ public class OrderDishEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "数量")
 	private Integer amount;
-	/**
-	 * 创建时间
-	 */
-	@ApiModelProperty(value = "创建时间")
-	private Date addTime;
-	/**
-	 * 备用
-	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
+
 
 }
