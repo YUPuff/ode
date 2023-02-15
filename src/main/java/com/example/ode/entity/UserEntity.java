@@ -74,6 +74,14 @@ public class UserEntity implements Serializable {
 	@ApiModelProperty(value = "创建时间")
 	@TableField(fill = FieldFill.INSERT)
 	private Date addTime;
+
+	/**
+	 * 修改时间
+	 */
+	@ApiModelProperty(value = "修改时间")
+	@TableField(fill = FieldFill.UPDATE)
+	private Date updTime;
+
 	/**
 	 * 备用
 	 */

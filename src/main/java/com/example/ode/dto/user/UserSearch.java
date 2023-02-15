@@ -32,5 +32,9 @@ public class UserSearch {
     private Integer pageNum;
 
 
+    /**
+     * 当前页大小
+     */
+    private Integer pageSize;
 
 }

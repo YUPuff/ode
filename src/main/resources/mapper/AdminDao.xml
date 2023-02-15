@@ -8,12 +8,19 @@
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="password" column="password"/>
+        <result property="role" column="role"/>
         <result property="isLock" column="is_lock"/>
+        <result property="isVal" column="is_val"/>
         <result property="isDel" column="is_del"/>
         <result property="pic" column="pic"/>
         <result property="addTime" column="add_time"/>
+        <result property="updTime" column="upd_time"/>
         <result property="extra" column="extra"/>
     </resultMap>
+
+    <select id="selectMyPage" resultType="com.example.ode.vo.AdminVO">
+        SELECT id,name,role,is_lock,is_val,pic FROM t_admin ${ew.customSqlSegment}
+    </select>
 
 
 </mapper>

@@ -1,5 +1,7 @@
 package com.example.ode.common;
 
+import com.example.ode.constant.ResultConstant;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +59,8 @@ public class Result <R> implements Serializable {
         return result;
     }
 
-    public static <R> Result<R> success(String message){
-        return message(message);
+    public static <R> Result<R> success(){
+        return message(ResultConstant.SUCCESS);
     }
 
     public static <R> Result<R> success(R data,String message){

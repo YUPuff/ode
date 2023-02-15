@@ -1,6 +1,7 @@
 package com.example.ode.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.ode.common.MyPage;
 import com.example.ode.dto.admin.AdminIns;
 import com.example.ode.dto.admin.AdminSearch;
 import com.example.ode.dto.admin.AdminUpd;
@@ -8,7 +9,6 @@ import com.example.ode.entity.AdminEntity;
 import com.example.ode.vo.AdminVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yilin
@@ -16,11 +16,16 @@ import java.util.Map;
  */
 public interface AdminService extends IService<AdminEntity> {
 
-    Map<String,Object> login(String code);
-    AdminVO login(AdminIns adminIns);
-    AdminVO add(AdminIns adminIns);
-    AdminVO update(AdminUpd userUpd);
-    String delete(Integer id);
-    List<AdminVO> getUser(AdminSearch userSearch);
+    void signup(AdminIns ins);
+
+    AdminVO login(AdminIns ins);
+    void update(AdminUpd upd);
+
+
+    void delete(List<Integer> ids);
+    MyPage<AdminVO> getAdmins(AdminSearch search);
+
+    AdminVO getOneAdmin(Integer id);
+
 }
 

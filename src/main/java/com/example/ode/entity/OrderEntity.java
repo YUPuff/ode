@@ -26,27 +26,23 @@ public class OrderEntity implements Serializable {
 	 */
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "订单Id")
-	private Integer id;
+	private Long id;
 	/**
 	 * 桌号
 	 */
 	@ApiModelProperty(value = "桌号")
 	private Integer tableId;
 	/**
-	 * 订单状态（0：进行中，1：待评价，2：已完成，3：已取消）
+	 * 订单状态（0：未开始，1：进行中，2：待评价，3：已完成，4：已取消）
 	 */
-	@ApiModelProperty(value = "订单状态（0：进行中，1：待评价，2：已完成，3：已取消）")
+	@ApiModelProperty(value = "（0：未开始，1：进行中，2：待评价，3：已完成，4：已取消）")
 	private Integer state;
 	/**
 	 * 总金额
 	 */
 	@ApiModelProperty(value = "总金额")
 	private Double total;
-	/**
-	 * 菜品关键词
-	 */
-	@ApiModelProperty(value = "菜品关键词")
-	private String key;
+
 	/**
 	 * 订单备注
 	 */

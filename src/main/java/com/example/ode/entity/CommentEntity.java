@@ -26,7 +26,7 @@ public class CommentEntity implements Serializable {
 	 */
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "评价Id")
-	private Integer id;
+	private Long id;
 	/**
 	 * 评价类型（1：菜品评价，2：服务评价，3：环境评价）
 	 */

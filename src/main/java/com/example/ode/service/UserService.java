@@ -17,6 +17,9 @@ public interface UserService extends IService<UserEntity> {
     String login1(String code);
 
     UserVO login2(WXAuth wxAuth);
+
+    void login(UserVO userVO);
+
     String delete(List<Long> ids);
     MyPage<UserVO> getUser(UserSearch search);
 }

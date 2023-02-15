@@ -26,7 +26,7 @@ public class OrderDishEntity implements Serializable {
 	 */
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "id")
-	private Integer id;
+	private Long id;
 	/**
 	 * 订单id
 	 */

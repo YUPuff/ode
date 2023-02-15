@@ -16,5 +16,8 @@
         <result property="extra" column="extra"/>
     </resultMap>
 
+    <select id="selectMyPage" resultType="com.example.ode.vo.UserVO">
+        SELECT id,name,gender,pic FROM t_user ${ew.customSqlSegment}
+    </select>
 
 </mapper>

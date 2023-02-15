@@ -14,6 +14,7 @@ import com.example.ode.model.WXAuth;
 import com.example.ode.service.WxService;
 import com.example.ode.util.JWTUtils;
 import com.example.ode.vo.UserVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +26,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.ode.dao.UserDao;
 import com.example.ode.entity.UserEntity;
 import com.example.ode.service.UserService;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -99,7 +100,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             // 登录
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(newUser,userVO);
-            return login(userVO);
+            login(userVO);
+            return userVO;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -110,11 +112,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @param userVO
      * @return
      */
-    public UserVO login(UserVO userVO) {
+    @Override
+    public void login(UserVO userVO) {
         String token = JWTUtils.sign(userVO.getId());
         redisTemplate.opsForValue().set(RedisConstant.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
         userVO.setToken(token);
-        return userVO;
     }
 
     /**
@@ -136,7 +138,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         userDao.updateById(userEntity);
     }
 
+    /**
+     * 批量删除普通用户
+     * @param ids
+     * @return
+     */
     @Override
+    @Transactional
     public String delete(List<Long> ids) {
         // 逻辑删除
         int res = userDao.deleteBatchIds(ids);
@@ -144,21 +152,20 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         else return ResultConstant.FAILURE;
     }
 
+    /**
+     * 分页查询普通用户
+     * @param search
+     * @return
+     */
     @Override
     public MyPage<UserVO> getUser(UserSearch search) {
-        IPage<UserEntity> page = new Page<>(search.getPageNum(),10);
-        IPage<UserEntity> userPage = userDao.selectPage(page, new LambdaQueryWrapper<UserEntity>()
-                                                                .like(UserEntity::getName,search.getName())
-                                                                .eq(UserEntity::getGender,search.getGender()));
+        IPage<UserEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
+        IPage<UserVO> userPage = userDao.selectMyPage(page, new LambdaQueryWrapper<UserEntity>()
+                .like(StringUtils.isNotBlank(search.getName()),UserEntity::getName,search.getName())
+                .eq(StringUtils.isNotBlank(search.getGender()),UserEntity::getGender,search.getGender()));
 
-        List<UserEntity> records = userPage.getRecords();
-        List<UserVO> list = new ArrayList<>();
-        for (UserEntity userEntity:records) {
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(userEntity,userVO);
-            list.add(userVO);
-        }
+        MyPage<UserVO> myPage = MyPage.createPage(userPage);
 
-        return null;
+        return myPage;
     }
 }

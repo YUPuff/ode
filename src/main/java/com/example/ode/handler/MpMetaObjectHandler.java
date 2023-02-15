@@ -28,6 +28,6 @@ public class MpMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.setFieldValByName("updateTime", new Date(), metaObject);
+        this.setFieldValByName("updTime", new Date(), metaObject);
     }
 }

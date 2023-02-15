@@ -1,8 +1,6 @@
 package com.example.ode.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -37,30 +35,41 @@ public class AdminEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "密码")
 	private String password;
+
 	/**
-	 * 是否锁定（0：否，1：是）
+	 * 角色（0：管理员，1：服务员，2：后厨）
 	 */
-	@ApiModelProperty(value = "是否锁定（0：否，1：是）")
-	private Integer isLock;
+	private Integer role;
 	/**
 	 * 是否删除（0：否，1：是）
 	 */
-	@ApiModelProperty(value = "是否删除（0：否，1：是）")
+	@TableLogic
 	private Integer isDel;
+	/**
+	 * 是否生效（0：否，1：是，2：已驳回）
+	 */
+	private Integer isVal;
+	/**
+	 * 是否锁定（0：否，1：是）
+	 */
+	private Integer isLock;
 	/**
 	 * 头像路径
 	 */
-	@ApiModelProperty(value = "头像路径")
 	private String pic;
 	/**
-	 * 创建时间
+	 * 添加时间
 	 */
-	@ApiModelProperty(value = "创建时间")
+	@TableField(fill = FieldFill.INSERT)
 	private Date addTime;
 	/**
-	 * 备用
+	 * 修改时间
 	 */
-	@ApiModelProperty(value = "备用")
+	@TableField(fill = FieldFill.UPDATE)
+	private Date updTime;
+	/**
+	 * 额外
+	 */
 	private String extra;
 
 }
