@@ -28,16 +28,19 @@ public class OrderEntity extends BaseEntity implements Serializable {
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "订单Id")
 	private Long id;
+
 	/**
 	 * 桌号
 	 */
 	@ApiModelProperty(value = "桌号")
 	private Integer tableId;
+
 	/**
 	 * 订单状态（0：未开始，1：进行中，2：待评价，3：已完成，4：已取消）
 	 */
 	@ApiModelProperty(value = "（0：未开始，1：进行中，2：待评价，3：已完成，4：已取消）")
 	private Integer status;
+
 	/**
 	 * 总金额
 	 */

@@ -27,16 +27,19 @@ public class OrderDishEntity extends BaseEntity implements Serializable {
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "id")
 	private Long id;
+
 	/**
 	 * 订单id
 	 */
 	@ApiModelProperty(value = "订单id")
 	private Long orderId;
+
 	/**
 	 * 菜品id
 	 */
 	@ApiModelProperty(value = "菜品id")
 	private Integer dishId;
+
 	/**
 	 * 菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
 	 */

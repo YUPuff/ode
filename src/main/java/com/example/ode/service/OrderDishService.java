@@ -11,5 +11,8 @@ import java.util.Map;
  */
 public interface OrderDishService extends IService<OrderDishEntity> {
 
+    void updateStatus(Long id);
+
+    void cancelDish(Long id);
 }
 

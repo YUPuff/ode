@@ -54,6 +54,7 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
         dishDao.updateById(entity);
     }
 
+
     /**
      * 批量删除菜品
      * @param ids

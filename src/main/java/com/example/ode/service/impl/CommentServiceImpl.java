@@ -10,6 +10,7 @@ import com.example.ode.dto.comment.CommentIns;
 import com.example.ode.dto.comment.CommentSearch;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.service.DishService;
+import com.example.ode.service.OrderService;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
 
     @Autowired
     private DishService dishService;
+
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 遍历集合，逐个处理并添加至数据库
@@ -76,6 +80,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
             }
             throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
         }
+        // 用户完成评价后，需要修改订单状态
+        orderService.updateStatus(ins.getOrderId());
     }
 
     /**
