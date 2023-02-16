@@ -1,15 +1,14 @@
 package com.example.ode.controller;
 
-import java.util.Arrays;
-import java.util.Map;
 
-
+import com.example.ode.common.Result;
+import com.example.ode.dto.comment.CommentIns;
+import com.example.ode.dto.comment.CommentSearch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ode.entity.CommentEntity;
 import com.example.ode.service.CommentService;
 
 
@@ -24,9 +23,21 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @GetMapping("/get")
-    public CommentEntity getComment(){
-        return null;
+    @RequestMapping("/add")
+    public Result add(CommentIns ins){
+        commentService.add(ins);
+        return Result.success();
+    }
+
+    @RequestMapping("/del/{id}")
+    public Result delete(@PathVariable("id") Long id){
+        commentService.delete(id);
+        return Result.success();
+    }
+
+    @RequestMapping("/get")
+    public Result getComments(CommentSearch search){
+        return Result.success(commentService.getComments(search));
     }
 
 }

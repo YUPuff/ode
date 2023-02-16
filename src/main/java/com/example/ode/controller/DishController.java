@@ -8,6 +8,7 @@ import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,8 +45,8 @@ public class DishController {
         return Result.success();
     }
 
-    @RequestMapping("/detail")
-    public Result detail(Integer id){
+    @RequestMapping("/detail/{id}")
+    public Result detail(@PathVariable("id") Integer id){
         return Result.success(dishService.getOneDish(id));
     }
 
