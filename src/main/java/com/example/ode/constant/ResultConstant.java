@@ -15,5 +15,10 @@ public class ResultConstant {
 
     public static final String DISH_NO_EXIST_EXCEPTION = "菜品不存在";
 
+    public static final String TYPE_NO_EXIST_EXCEPTION = "分类不存在";
+    public static final String TYPE_EXIST_EXCEPTION = "待创建的分类代号或分类名已存在！";
+
+    public static final String TYPE_HAS_EXCEPTION = "此分类代号或分类名下仍有相关菜品，无法修改！";
+
 
 }

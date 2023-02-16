@@ -9,7 +9,6 @@ import com.example.ode.constant.ResultConstant;
 import com.example.ode.dto.dish.DishIns;
 import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
-import com.example.ode.entity.BaseEntity;
 import com.example.ode.vo.DishVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -92,6 +91,18 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
         DishEntity entity = dishDao.selectById(id);
         if (entity == null) throw new BusinessException(ResultConstant.DISH_NO_EXIST_EXCEPTION);
         return entity;
+    }
+
+    /**
+     * 由于分类改变，需要批量修改分类代号
+     * @param oldType
+     * @param newType
+     */
+    @Override
+    public void updateForTypeChange(Integer oldType, Integer newType) {
+        DishEntity entity = new DishEntity();
+        entity.setType(newType);
+        dishDao.update(entity,new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType,oldType));
     }
 
 

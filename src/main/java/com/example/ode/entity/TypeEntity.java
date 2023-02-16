@@ -2,6 +2,7 @@ package com.example.ode.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -18,7 +19,7 @@ import lombok.Data;
 @Data
 @TableName("t_type")
 @ApiModel(value = "Type对象")
-public class TypeEntity implements Serializable {
+public class TypeEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -39,9 +40,11 @@ public class TypeEntity implements Serializable {
 	private String name;
 
 	/**
-	 * 备用
+	 * 是否删除（0：否，1：是）
 	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
+	@ApiModelProperty(value = "是否删除（0：否，1：是）")
+	@TableLogic
+	private Integer idDel;
+
 
 }

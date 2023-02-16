@@ -26,6 +26,8 @@ public interface DishService extends IService<DishEntity> {
 
     DishEntity getOneDish(Integer id);
 
+    void updateForTypeChange(Integer oldType,Integer newType);
+
 
 }
 
