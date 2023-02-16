@@ -7,11 +7,11 @@
     <resultMap type="com.example.ode.entity.OrderEntity" id="orderMap">
         <result property="id" column="id"/>
         <result property="tableId" column="table_id"/>
-        <result property="state" column="state"/>
+        <result property="status" column="status"/>
         <result property="total" column="total"/>
-        <result property="key" column="key"/>
         <result property="remark" column="remark"/>
         <result property="addTime" column="add_time"/>
+        <result property="updTime" column="upd_time"/>
         <result property="extra" column="extra"/>
     </resultMap>
 

@@ -44,7 +44,7 @@ public class TypeEntity extends BaseEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
 	@TableLogic
-	private Integer idDel;
+	private Integer isDel;
 
 
 }

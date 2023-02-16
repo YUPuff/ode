@@ -41,7 +41,7 @@ public class OrderDishEntity extends BaseEntity implements Serializable {
 	 * 菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
 	 */
 	@ApiModelProperty(value = "菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）")
-	private Integer state;
+	private Integer status;
 	/**
 	 * 数量
 	 */

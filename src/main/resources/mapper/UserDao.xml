@@ -8,11 +8,13 @@
         <result property="id" column="id"/>
         <result property="openId" column="open_id"/>
         <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="pic" column="pic"/>
         <result property="province" column="province"/>
         <result property="city" column="city"/>
-        <result property="pic" column="pic"/>
         <result property="isDel" column="is_del"/>
         <result property="addTime" column="add_time"/>
+        <result property="updTime" column="upd_time"/>
         <result property="extra" column="extra"/>
     </resultMap>
 
