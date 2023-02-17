@@ -24,7 +24,7 @@ public class AdminEntity extends BaseEntity implements Serializable {
 	 */
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "用户Id")
-	private Integer id;
+	private Long id;
 	/**
 	 * 用户名
 	 */

@@ -1,6 +1,9 @@
 package com.example.ode.common;
 
 import com.example.ode.constant.ResultConstant;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,6 +16,9 @@ import java.util.Map;
  * @Date: 2023-01-29 16:03
  **/
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Result <R> implements Serializable {
     private static final long serialVersionUID = 7574078101944305355L;
 
@@ -36,7 +42,6 @@ public class Result <R> implements Serializable {
      */
     private Map<String, Object> otherData = new HashMap();
 
-    public Result(){}
 
     public Result(String code){this.code = code;}
 

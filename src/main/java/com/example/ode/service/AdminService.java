@@ -19,10 +19,11 @@ public interface AdminService extends IService<AdminEntity> {
     void signup(AdminIns ins);
 
     AdminVO login(AdminIns ins);
+
     void update(AdminUpd upd);
 
-
     void delete(List<Integer> ids);
+
     MyPage<AdminVO> getAdmins(AdminSearch search);
 
     AdminVO getOneAdmin(Integer id);

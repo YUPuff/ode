@@ -11,6 +11,7 @@ import com.example.ode.dto.type.TypeUpd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,13 +31,13 @@ public class TypeController {
     private TypeService typeService;
 
     @RequestMapping("/add")
-    public Result add(@Validated TypeIns ins){
+    public Result add(@Validated @RequestBody TypeIns ins){
         typeService.add(ins);
         return Result.success();
     }
 
     @RequestMapping("/upd")
-    public Result update(@Validated TypeUpd upd){
+    public Result update(@Validated @RequestBody TypeUpd upd){
         typeService.update(upd);
         return Result.success();
     }
@@ -53,7 +54,7 @@ public class TypeController {
     }
 
     @RequestMapping("/get")
-    public Result get(TypeSearch search){
+    public Result get(@RequestBody TypeSearch search){
         return Result.success(typeService.getTypes(search));
     }
 }

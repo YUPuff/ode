@@ -27,7 +27,7 @@ public class OrderController {
     private OrderService orderService;
 
     @RequestMapping("/add")
-    public Result add(@Validated OrderIns ins){
+    public Result add(@Validated @RequestBody OrderIns ins){
         orderService.add(ins);
         return Result.success();
     }
@@ -50,7 +50,7 @@ public class OrderController {
     }
 
     @PostMapping("/get")
-    public Result getOrders(OrderSearch search){
+    public Result getOrders(@RequestBody OrderSearch search){
         return Result.success(orderService.getOrders(search));
     }
 }

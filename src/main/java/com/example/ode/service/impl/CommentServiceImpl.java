@@ -11,7 +11,7 @@ import com.example.ode.dto.comment.CommentSearch;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderService;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +23,7 @@ import com.example.ode.entity.CommentEntity;
 import com.example.ode.service.CommentService;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotBlank;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service("commentService")

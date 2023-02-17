@@ -28,20 +28,20 @@ public class AdminController {
 
     @RequestMapping("/signup")
     @NoAuth
-    public Result signup(@Validated AdminIns ins){
+    public Result signup(@Validated @RequestBody AdminIns ins){
         adminService.signup(ins);
         return Result.success();
     }
 
     @RequestMapping("/login")
     @NoAuth
-    public Result login(@Validated AdminIns ins){
+    public Result login(@Validated @RequestBody AdminIns ins){
         return Result.success(adminService.login(ins));
     }
 
 
     @PostMapping("/upd")
-    public Result update(@Validated AdminUpd upd){
+    public Result update(@Validated @RequestBody AdminUpd upd){
         adminService.update(upd);
         return Result.success();
     }
@@ -58,7 +58,7 @@ public class AdminController {
     }
 
     @RequestMapping("/get")
-    public Result getAdmins(AdminSearch search){
+    public Result getAdmins(@RequestBody AdminSearch search){
         return Result.success(adminService.getAdmins(search));
     }
 

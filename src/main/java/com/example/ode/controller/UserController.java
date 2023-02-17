@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @RequestMapping("/get")
-    public Result getUser(UserSearch search){
+    public Result getUser(@RequestBody UserSearch search){
         return Result.success(userService.getUser(search));
     }
 

@@ -9,6 +9,7 @@ import com.example.ode.dto.dish.DishUpd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,13 +29,13 @@ public class DishController {
     private DishService dishService;
 
     @RequestMapping("/add")
-    public Result add(@Validated DishIns ins){
+    public Result add(@Validated @RequestBody DishIns ins){
         dishService.add(ins);
         return Result.success();
     }
 
     @RequestMapping("/upd")
-    public Result update(@Validated DishUpd upd){
+    public Result update(@Validated @RequestBody DishUpd upd){
         dishService.update(upd);
         return Result.success();
     }
@@ -51,7 +52,7 @@ public class DishController {
     }
 
     @RequestMapping("/get")
-    public Result getDishes(DishSearch search){
+    public Result getDishes(@RequestBody DishSearch search){
         return Result.success(dishService.getDishes(search));
     }
 }
