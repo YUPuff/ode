@@ -23,6 +23,9 @@ mybatis:
 
 
 # WeChat applet
+wxmini:
+  appid: wx1fac75deda32afd0
+  secret: c0fe8d0d9e9ef0d4aebc5d7a37a17c0b
 
 
 

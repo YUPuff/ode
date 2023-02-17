@@ -1,5 +1,9 @@
 package com.example.ode.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
 import com.example.ode.constant.ResultConstant;
@@ -8,8 +12,10 @@ import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.OrderDishEntity;
+import com.example.ode.enums.OrderStatus;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderDishService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +51,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     public void add(OrderIns ins) {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setTableId(ins.getTableId());
+        orderEntity.setUserId(ins.getUserId());
         orderEntity.setRemark(ins.getRemark());
         // 先插入订单表以获取生成的订单id
         orderDao.insert(orderEntity);
@@ -78,7 +85,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderEntity order = orderDao.selectById(id);
         if (order == null) throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
         int status = order.getStatus();
-        if (status == 3 || status == 4) throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
+        if (status == OrderStatus.FINISHED.getCode() || status == OrderStatus.CANCELED.getCode()) throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
         order.setStatus(status+1);
         orderDao.updateById(order);
     }
@@ -92,14 +99,32 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderEntity order = orderDao.selectById(id);
         if (order == null) throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
         int status = order.getStatus();
-        if (status != 0) throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
-        order.setStatus(4);
+        if (status != OrderStatus.NOT_START.getCode()) throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
+        order.setStatus(OrderStatus.CANCELED.getCode());
         orderDao.updateById(order);
     }
 
     @Override
+    public OrderEntity detail(Long id) {
+        return orderDao.selectById(id);
+    }
+
+    /**
+     * 分页查询订单
+     * @param search
+     * @return
+     */
+    @Override
     public MyPage<OrderEntity> getOrders(OrderSearch search) {
-        return null;
+        IPage<OrderEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
+        IPage<OrderEntity> orderPage = orderDao.selectPage(page,new LambdaQueryWrapper<OrderEntity>()
+                .eq(StringUtils.isNotBlank(search.getUserId().toString()),OrderEntity::getUserId,search.getUserId())
+                .like(StringUtils.isNotBlank(search.getTableId().toString()),OrderEntity::getTableId,search.getTableId())
+                .eq(StringUtils.isNotBlank(search.getStatus().toString()),OrderEntity::getStatus,search.getStatus())
+                .le(StringUtils.isNotBlank(search.getMaxTotal().toString()),OrderEntity::getTotal,search.getMaxTotal())
+                .ge(StringUtils.isNotBlank(search.getMinTotal().toString()),OrderEntity::getStatus,search.getMinTotal()));
+        MyPage<OrderEntity> myPage = MyPage.createPage(orderPage);
+        return myPage;
     }
 
 }

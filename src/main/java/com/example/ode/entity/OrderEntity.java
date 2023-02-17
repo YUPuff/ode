@@ -30,6 +30,12 @@ public class OrderEntity extends BaseEntity implements Serializable {
 	private Long id;
 
 	/**
+	 * 用户id
+	 */
+	@ApiModelProperty(value = "用户id")
+	private Long userId;
+
+	/**
 	 * 桌号
 	 */
 	@ApiModelProperty(value = "桌号")

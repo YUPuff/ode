@@ -3,15 +3,17 @@ package com.example.ode.dto.order;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @Data
 public class OrderSearch {
 
+
     /**
-     * 订单id
+     * 用户id
      */
-    private Long id;
+    private Long userId;
 
     /**
      * 桌号
@@ -24,12 +26,22 @@ public class OrderSearch {
     private Integer status;
 
     /**
-     * 最低价格
+     * 最低金额
      */
-    private BigDecimal minPrice;
+    private BigDecimal minTotal;
 
     /**
-     * 最高价格
+     * 最高金额
      */
-    private BigDecimal maxPrice;
+    private BigDecimal maxTotal;
+
+    /**
+     * 当前页码，用于分页
+     */
+    private Integer pageNum;
+
+    /**
+     * 当前页大小
+     */
+    private Integer pageSize;
 }

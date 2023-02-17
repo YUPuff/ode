@@ -8,6 +8,13 @@ import java.util.List;
 
 @Data
 public class OrderIns {
+
+    /**
+     * 用户id
+     */
+    @NotBlank(message = "用户id")
+    private Long userId;
+
     /**
      * 桌号
      */
