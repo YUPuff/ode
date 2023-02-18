@@ -2,7 +2,6 @@ package com.example.ode.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
@@ -12,9 +11,12 @@ import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.OrderDishEntity;
+import com.example.ode.entity.UserEntity;
 import com.example.ode.enums.OrderStatus;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderDishService;
+import com.example.ode.service.UserService;
+import com.example.ode.util.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Autowired
     private OrderDishService orderDishService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 添加新订单
      * @param ins
@@ -49,6 +54,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     @Transactional
     public void add(OrderIns ins) {
+        // 验证用户是否存在
+        UserEntity user = userService.getById(ins.getUserId());
+        if (user == null)
+            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
+
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setTableId(ins.getTableId());
         orderEntity.setUserId(ins.getUserId());
@@ -67,7 +77,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             orderDishEntity.setAmount(dish.getAmount());
             orderDishService.save(orderDishEntity);
             // 计算出总金额
-            DishEntity dishEntity = dishService.getOneDish(dish.getId());
+            DishEntity dishEntity = dishService.getById(dish.getId());
             total.add(dishEntity.getPrice().multiply(new BigDecimal(dish.getAmount())));
         }
         // 修改订单其他相关信息
@@ -104,10 +114,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         orderDao.updateById(order);
     }
 
-    @Override
-    public OrderEntity detail(Long id) {
-        return orderDao.selectById(id);
-    }
 
     /**
      * 分页查询订单
@@ -118,11 +124,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     public MyPage<OrderEntity> getOrders(OrderSearch search) {
         IPage<OrderEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
         IPage<OrderEntity> orderPage = orderDao.selectPage(page,new LambdaQueryWrapper<OrderEntity>()
-                .eq(StringUtils.isNotBlank(search.getUserId().toString()),OrderEntity::getUserId,search.getUserId())
-                .like(StringUtils.isNotBlank(search.getTableId().toString()),OrderEntity::getTableId,search.getTableId())
-                .eq(StringUtils.isNotBlank(search.getStatus().toString()),OrderEntity::getStatus,search.getStatus())
-                .le(StringUtils.isNotBlank(search.getMaxTotal().toString()),OrderEntity::getTotal,search.getMaxTotal())
-                .ge(StringUtils.isNotBlank(search.getMinTotal().toString()),OrderEntity::getStatus,search.getMinTotal()));
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getUserId())),OrderEntity::getUserId,search.getUserId())
+                .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getTableId())),OrderEntity::getTableId,search.getTableId())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getStatus())),OrderEntity::getStatus,search.getStatus())
+                .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxTotal())),OrderEntity::getTotal,search.getMaxTotal())
+                .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getStatus,search.getMinTotal()));
         MyPage<OrderEntity> myPage = MyPage.createPage(orderPage);
         return myPage;
     }

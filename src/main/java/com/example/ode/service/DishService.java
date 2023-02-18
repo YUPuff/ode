@@ -24,7 +24,6 @@ public interface DishService extends IService<DishEntity> {
 
     MyPage<DishVO> getDishes(DishSearch search);
 
-    DishEntity getOneDish(Integer id);
 
     void updateForTypeChange(Integer oldType,Integer newType);
 

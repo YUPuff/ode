@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -21,7 +25,6 @@ public class AdminSearch {
     /**
      * 用户名
      */
-    @ApiModelProperty(value = "用户名")
     private String name;
 
 
@@ -30,26 +33,27 @@ public class AdminSearch {
      */
     private Integer role;
 
-
-    /**
-     * 是否生效（0：否，1：是，2：已驳回）
-     */
-    private Integer isVal;
-
     /**
      * 是否锁定（0：否，1：是）
      */
     private Integer isLock;
 
+    /**
+     * 是否生效（0：否，1：是,2：已驳回）
+     */
+    private Integer isVal;
+
 
     /**
      * 当前页码，用于分页
      */
+    @NotNull(message = "当前页码不能为空")
     private Integer pageNum;
 
     /**
      * 当前页大小
      */
+    @NotNull(message = "当前页大小不能为空")
     private Integer pageSize;
 
 

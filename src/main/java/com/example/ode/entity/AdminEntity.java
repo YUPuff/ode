@@ -45,10 +45,12 @@ public class AdminEntity extends BaseEntity implements Serializable {
 	 */
 	@TableLogic
 	private Integer isDel;
+
 	/**
 	 * 是否生效（0：否，1：是，2：已驳回）
 	 */
 	private Integer isVal;
+
 	/**
 	 * 是否锁定（0：否，1：是）
 	 */

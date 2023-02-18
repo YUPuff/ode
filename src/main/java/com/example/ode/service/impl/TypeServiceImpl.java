@@ -11,6 +11,7 @@ import com.example.ode.dto.type.TypeSearch;
 import com.example.ode.dto.type.TypeUpd;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.service.DishService;
+import com.example.ode.util.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,15 +99,6 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
         typeDao.deleteById(id);
     }
 
-    /**
-     * 查看某一分类详细信息
-     * @param id
-     * @return
-     */
-    @Override
-    public TypeEntity getOneType(Integer id) {
-        return typeDao.selectById(id);
-    }
 
     /**
      * 分页查询分类
@@ -118,7 +110,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
         IPage<TypeEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
         IPage<TypeEntity> typePage = typeDao.selectPage(page,new LambdaQueryWrapper<TypeEntity>()
                 .like(StringUtils.isNotBlank(search.getName()),TypeEntity::getName,search.getName())
-                .like(StringUtils.isNotBlank(search.getNumber().toString()),TypeEntity::getNumber,search.getNumber()));
+                .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getNumber())),TypeEntity::getNumber,search.getNumber()));
         MyPage<TypeEntity> myPage = MyPage.createPage(typePage);
         return myPage;
     }

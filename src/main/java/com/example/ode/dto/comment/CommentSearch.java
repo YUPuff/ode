@@ -3,6 +3,10 @@ package com.example.ode.dto.comment;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 @Data
 public class CommentSearch {
 
@@ -31,11 +35,13 @@ public class CommentSearch {
     /**
      * 当前页码，用于分页
      */
+    @NotNull(message = "当前页码不能为空")
     private Integer pageNum;
 
     /**
      * 当前页大小
      */
+    @NotNull(message = "当前页大小不能为空")
     private Integer pageSize;
 
 }

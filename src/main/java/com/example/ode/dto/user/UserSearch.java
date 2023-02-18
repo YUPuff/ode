@@ -1,7 +1,8 @@
 package com.example.ode.dto.user;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -17,24 +18,24 @@ public class UserSearch {
     /**
      * 用户名
      */
-    @ApiModelProperty(value = "用户名")
     private String name;
 
     /**
      * 性别
      */
-    @ApiModelProperty(value = "性别")
     private String gender;
 
     /**
      * 当前页码，用于分页
      */
+    @NotNull(message = "当前页码不能为空")
     private Integer pageNum;
 
 
     /**
      * 当前页大小
      */
+    @NotNull(message = "当前页大小不能为空")
     private Integer pageSize;
 
 }

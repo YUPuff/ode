@@ -20,8 +20,6 @@ public interface OrderService extends IService<OrderEntity> {
 
     void cancelOrder(Long id);
 
-    OrderEntity detail(Long id);
-
     MyPage<OrderEntity> getOrders(OrderSearch search);
 
 }

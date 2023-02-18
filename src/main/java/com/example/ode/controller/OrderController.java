@@ -46,11 +46,11 @@ public class OrderController {
 
     @GetMapping("/detail/{id}")
     public Result detail(@PathVariable("id")Long id){
-        return Result.success(orderService.detail(id));
+        return Result.success(orderService.getById(id));
     }
 
     @PostMapping("/get")
-    public Result getOrders(@RequestBody OrderSearch search){
+    public Result getOrders(@Validated @RequestBody OrderSearch search){
         return Result.success(orderService.getOrders(search));
     }
 }

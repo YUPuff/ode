@@ -11,7 +11,10 @@ import com.example.ode.dto.admin.AdminIns;
 import com.example.ode.dto.admin.AdminSearch;
 import com.example.ode.dto.admin.AdminUpd;
 import com.example.ode.entity.AdminEntity;
+import com.example.ode.enums.IsLock;
+import com.example.ode.enums.IsVal;
 import com.example.ode.service.UserService;
+import com.example.ode.util.ObjectUtils;
 import com.example.ode.vo.AdminVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -80,6 +83,10 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
     @Override
     public void update(AdminUpd upd) {
         AdminEntity entity = adminDao.selectById(upd.getId());
+        if (upd.getIsLock() == IsLock.NOT_LOCK.getCode())
+            entity.setIsLock(upd.getIsLock());
+        if (upd.getIsVal() == IsVal.VAL.getCode())
+            entity.setIsVal(upd.getIsVal());
         verify(entity);
         BeanUtils.copyProperties(upd,entity);
         adminDao.updateById(entity);
@@ -108,9 +115,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         IPage<AdminEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
         IPage<AdminVO> adminPage = adminDao.selectMyPage(page,new LambdaQueryWrapper<AdminEntity>()
                 .like(StringUtils.isNotBlank(search.getName()),AdminEntity::getName,search.getName())
-                .eq(StringUtils.isNotBlank(search.getRole().toString()),AdminEntity::getRole,search.getRole())
-                .eq(StringUtils.isNotBlank(search.getIsLock().toString()),AdminEntity::getIsLock,search.getIsLock())
-                .eq(StringUtils.isNotBlank(search.getIsVal().toString()),AdminEntity::getIsVal,search.getIsVal()));
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getRole())),AdminEntity::getRole,search.getRole())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getIsLock())),AdminEntity::getIsLock,search.getIsLock())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getIsVal())),AdminEntity::getIsVal,search.getIsVal()));
         MyPage<AdminVO> myPage = MyPage.createPage(adminPage);
         return myPage;
     }
@@ -123,7 +130,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
     @Override
     public AdminVO getOneAdmin(Integer id) {
         AdminEntity entity = adminDao.selectById(id);
-        if (entity == null) throw new BusinessException(ResultConstant.NO_EXIST_EXCEPTION);
+        if (entity == null)
+            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
         AdminVO adminVO = new AdminVO();
         BeanUtils.copyProperties(entity,adminVO);
         return adminVO;
@@ -137,19 +145,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     private void verify(AdminEntity entity){
         if (entity == null){
-            throw new BusinessException(ResultConstant.NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
         }
         // 账户被锁定
-        else if (entity.getIsLock() == 1) throw new BusinessException(ResultConstant.IS_LOCK_EXCEPTION);
-        else{
-            switch (entity.getIsVal()){
-                // 账户未生效
-                case 0:
-                    throw new BusinessException(ResultConstant.IS_VAL_EXCEPTION);
-                    // 账户被驳回
-                case 2:
-                    throw new BusinessException(ResultConstant.REJECT_EXCEPTION+entity.getExtra());
-            }
-        }
+        else if (entity.getIsLock() == IsLock.LOCK.getCode())
+            throw new BusinessException(ResultConstant.USER_IS_LOCK_EXCEPTION);
+        // 账户未生效
+        else if (entity.getIsVal() == IsVal.NOT_VAL.getCode())
+            throw new BusinessException(ResultConstant.USER_IS_VAL_EXCEPTION);
+        // 账户被驳回
+        else if (entity.getIsVal() == IsVal.REJECT.getCode())
+            throw new BusinessException(ResultConstant.USER_REJECT_EXCEPTION+entity.getExtra());
     }
 }

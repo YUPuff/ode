@@ -50,11 +50,11 @@ public class TypeController {
 
     @RequestMapping("/detail/{id}")
     public Result detail(@PathVariable("id") Integer id){
-        return Result.success(typeService.getOneType(id));
+        return Result.success(typeService.getById(id));
     }
 
     @RequestMapping("/get")
-    public Result get(@RequestBody TypeSearch search){
+    public Result get(@Validated @RequestBody TypeSearch search){
         return Result.success(typeService.getTypes(search));
     }
 }

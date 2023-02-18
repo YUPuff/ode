@@ -7,7 +7,6 @@ import com.example.ode.dto.type.TypeSearch;
 import com.example.ode.dto.type.TypeUpd;
 import com.example.ode.entity.TypeEntity;
 
-import java.util.List;
 
 
 /**
@@ -21,8 +20,6 @@ public interface TypeService extends IService<TypeEntity> {
     void update(TypeUpd upd);
 
     void delete(Integer id);
-
-    TypeEntity getOneType(Integer id);
 
     MyPage<TypeEntity> getTypes(TypeSearch search);
 

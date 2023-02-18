@@ -58,7 +58,7 @@ public class AdminController {
     }
 
     @RequestMapping("/get")
-    public Result getAdmins(@RequestBody AdminSearch search){
+    public Result getAdmins(@Validated @RequestBody AdminSearch search){
         return Result.success(adminService.getAdmins(search));
     }
 

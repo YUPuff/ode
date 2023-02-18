@@ -3,6 +3,7 @@ package com.example.ode.dto.dish;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -33,16 +34,17 @@ public class DishSearch {
     /**
      * 所在分类代号
      */
-    @ApiModelProperty(value = "所在分类代号")
     private Integer type;
 
     /**
      * 当前页码，用于分页
      */
+    @NotNull(message = "当前页码不能为空")
     private Integer pageNum;
 
     /**
      * 当前页大小
      */
+    @NotNull(message = "当前页大小不能为空")
     private Integer pageSize;
 }

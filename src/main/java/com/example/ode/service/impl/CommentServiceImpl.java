@@ -9,9 +9,13 @@ import com.example.ode.constant.ResultConstant;
 import com.example.ode.dto.comment.CommentIns;
 import com.example.ode.dto.comment.CommentSearch;
 import com.example.ode.entity.DishEntity;
+import com.example.ode.entity.OrderEntity;
+import com.example.ode.entity.UserEntity;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderService;
 
+import com.example.ode.service.UserService;
+import com.example.ode.util.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 遍历集合，逐个处理并添加至数据库
      * @param ins
@@ -45,6 +52,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
     @Override
     @Transactional
     public void add(CommentIns ins) {
+        // 验证用户是否存在
+        UserEntity user = userService.getById(ins.getUserId());
+        if (user == null)
+            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
+        // 验证订单是否存在
+        OrderEntity order = orderService.getById(ins.getOrderId());
+        if (order == null)
+            throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+        // 处理各条分评论
         List<String> list = ins.getItems();
         for (String s:list){
             String[] ss = s.split("-"); //单个评价组成：类型-（目标对象id）-等级
@@ -100,10 +116,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
     public MyPage<CommentEntity> getComments(CommentSearch search) {
         IPage<CommentEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
         IPage<CommentEntity> commentPage = commentDao.selectPage(page,new LambdaQueryWrapper<CommentEntity>()
-                .eq(StringUtils.isNotBlank(search.getType().toString()),CommentEntity::getType,search.getType())
-                .eq(StringUtils.isNotBlank(search.getTarget().toString()),CommentEntity::getTarget,search.getTarget())
-                .eq(StringUtils.isNotBlank(search.getLevel().toString()),CommentEntity::getLevel,search.getLevel())
-                .eq(StringUtils.isNotBlank(search.getUserId().toString()),CommentEntity::getUserId,search.getUserId()));
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getType())),CommentEntity::getType,search.getType())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getTarget())),CommentEntity::getTarget,search.getTarget())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getLevel())),CommentEntity::getLevel,search.getLevel())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getUserId())),CommentEntity::getUserId,search.getUserId()));
 
         MyPage<CommentEntity> myPage = MyPage.createPage(commentPage);
         return myPage;

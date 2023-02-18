@@ -6,6 +6,7 @@ import com.example.ode.dto.user.UserSearch;
 import com.example.ode.model.WXAuth;
 import com.example.ode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @RequestMapping("/get")
-    public Result getUser(@RequestBody UserSearch search){
+    public Result getUser(@Validated @RequestBody UserSearch search){
         return Result.success(userService.getUser(search));
     }
 

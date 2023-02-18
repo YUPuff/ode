@@ -48,11 +48,11 @@ public class DishController {
 
     @RequestMapping("/detail/{id}")
     public Result detail(@PathVariable("id") Integer id){
-        return Result.success(dishService.getOneDish(id));
+        return Result.success(dishService.getById(id));
     }
 
     @RequestMapping("/get")
-    public Result getDishes(@RequestBody DishSearch search){
+    public Result getDishes(@Validated @RequestBody DishSearch search){
         return Result.success(dishService.getDishes(search));
     }
 }
