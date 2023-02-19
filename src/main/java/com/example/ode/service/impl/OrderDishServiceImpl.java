@@ -27,7 +27,8 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
     private OrderService orderService;
 
     /**
-     * 菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
+     * 修改菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
+     *
      * @param id
      */
     @Override
@@ -53,11 +54,17 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
         }
     }
 
+    /**
+     * 撤销菜品
+     * @param id
+     */
     @Override
     public void cancelDish(Long id) {
+        // 验证是否有对应存在的订单
         OrderDishEntity entity = orderDishDao.selectById(id);
         if (entity == null) throw new BusinessException(ResultConstant.ORDER_DISH_NO_EXIST_EXCEPTION);
         int status = entity.getStatus();
+        // 只有未烹饪的菜品才能被取消
         if (status != DishStatus.WAIT_TO_COOK.getCode())
             throw new BusinessException(ResultConstant.ORDER_DISH_CANT_EXCEPTION);
         entity.setStatus(DishStatus.CANCELED.getCode());

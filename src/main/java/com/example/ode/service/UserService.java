@@ -20,8 +20,6 @@ public interface UserService extends IService<UserEntity> {
 
     void login(UserVO userVO);
 
-    String delete(List<Long> ids);
-
     MyPage<UserVO> getUser(UserSearch search);
 }
 

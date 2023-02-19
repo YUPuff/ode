@@ -5,6 +5,7 @@ import com.example.ode.common.MyPage;
 import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
 import com.example.ode.entity.OrderEntity;
+import com.example.ode.vo.OrderVO;
 
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public interface OrderService extends IService<OrderEntity> {
     void updateStatus(Long id);
 
     void cancelOrder(Long id);
+
+    OrderVO detail(Long id,Integer pageNum);
 
     MyPage<OrderEntity> getOrders(OrderSearch search);
 

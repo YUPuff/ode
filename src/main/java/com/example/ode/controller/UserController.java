@@ -35,8 +35,9 @@ public class UserController {
 
 
     @RequestMapping("/del")
-    public Result del(List<Long> ids){
-        return Result.success(userService.delete(ids));
+    public Result del(@RequestBody List<Long> ids){
+        userService.removeBatchByIds(ids);
+        return Result.success();
     }
 
     @RequestMapping("/get")

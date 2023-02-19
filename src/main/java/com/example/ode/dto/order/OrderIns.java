@@ -3,6 +3,7 @@ package com.example.ode.dto.order;
 import com.example.ode.dto.dish.DishDTO;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class OrderIns {
     /**
      * 菜品集合
      */
+    @NotEmpty(message = "未选择任何菜品")
     private List<DishDTO> dishes;
 
     /**

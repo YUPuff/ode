@@ -22,8 +22,6 @@ public interface AdminService extends IService<AdminEntity> {
 
     void update(AdminUpd upd);
 
-    void delete(List<Integer> ids);
-
     MyPage<AdminVO> getAdmins(AdminSearch search);
 
     AdminVO getOneAdmin(Integer id);

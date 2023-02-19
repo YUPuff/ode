@@ -138,19 +138,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         userDao.updateById(userEntity);
     }
 
-    /**
-     * 批量删除普通用户
-     * @param ids
-     * @return
-     */
-    @Override
-    @Transactional
-    public String delete(List<Long> ids) {
-        // 逻辑删除
-        int res = userDao.deleteBatchIds(ids);
-        if (res>0) return ResultConstant.SUCCESS;
-        else return ResultConstant.FAILURE;
-    }
 
     /**
      * 分页查询普通用户

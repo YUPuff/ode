@@ -8,10 +8,7 @@ import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.ode.service.DishService;
 
@@ -28,25 +25,25 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
-    @RequestMapping("/add")
+    @PostMapping("/add")
     public Result add(@Validated @RequestBody DishIns ins){
         dishService.add(ins);
         return Result.success();
     }
 
-    @RequestMapping("/upd")
+    @PostMapping("/upd")
     public Result update(@Validated @RequestBody DishUpd upd){
         dishService.update(upd);
         return Result.success();
     }
 
     @RequestMapping("/del")
-    public Result delete(List<Integer> ids){
-        dishService.delete(ids);
+    public Result delete(@RequestBody List<Integer> ids){
+        dishService.removeByIds(ids);
         return Result.success();
     }
 
-    @RequestMapping("/detail/{id}")
+    @GetMapping("/detail/{id}")
     public Result detail(@PathVariable("id") Integer id){
         return Result.success(dishService.getById(id));
     }

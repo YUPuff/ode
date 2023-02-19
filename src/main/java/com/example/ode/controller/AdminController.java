@@ -26,14 +26,14 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @RequestMapping("/signup")
+    @PostMapping("/signup")
     @NoAuth
     public Result signup(@Validated @RequestBody AdminIns ins){
         adminService.signup(ins);
         return Result.success();
     }
 
-    @RequestMapping("/login")
+    @PostMapping("/login")
     @NoAuth
     public Result login(@Validated @RequestBody AdminIns ins){
         return Result.success(adminService.login(ins));
@@ -48,7 +48,7 @@ public class AdminController {
 
     @GetMapping("/del")
     public Result delete(List<Integer> ids){
-        adminService.delete(ids);
+        adminService.removeBatchByIds(ids);
         return Result.success();
     }
 

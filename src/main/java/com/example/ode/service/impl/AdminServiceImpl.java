@@ -93,16 +93,6 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
     }
 
 
-    /**
-     * 批量删除员工
-     * @param ids
-     * @return
-     */
-    @Override
-    @Transactional
-    public void delete(List<Integer> ids) {
-        if (adminDao.deleteBatchIds(ids)<=0) throw new BusinessException("删除不存在的用户，操作失败！");
-    }
 
     /**
      * 分页查询员工

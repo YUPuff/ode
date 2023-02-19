@@ -16,7 +16,6 @@ public interface CommentService extends IService<CommentEntity> {
 
     void add(CommentIns ins);
 
-    void delete(Long id);
 
     MyPage<CommentEntity> getComments(CommentSearch search);
 }

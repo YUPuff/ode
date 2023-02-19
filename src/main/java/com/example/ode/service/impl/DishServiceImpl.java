@@ -43,11 +43,9 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
      */
     @Override
     public void add(DishIns ins) {
+        // 验证分类是否存在
+        verifyTypeExist(ins.getType());
         DishEntity entity = new DishEntity();
-        TypeEntity one = typeService.getOne(new LambdaQueryWrapper<TypeEntity>()
-                .eq(TypeEntity::getNumber, ins.getType()));
-        if (one == null)
-            throw new BusinessException(ResultConstant.TYPE_NO_EXIST_EXCEPTION);
         BeanUtils.copyProperties(ins,entity);
         dishDao.insert(entity);
     }
@@ -60,20 +58,11 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
     public void update(DishUpd upd) {
         DishEntity entity = dishDao.selectById(upd.getId());
         if (entity == null) throw new BusinessException(ResultConstant.DISH_NO_EXIST_EXCEPTION);
+        verifyTypeExist(upd.getType());
         BeanUtils.copyProperties(upd,entity);
         dishDao.updateById(entity);
     }
 
-
-    /**
-     * 批量删除菜品
-     * @param ids
-     */
-    @Override
-    @Transactional
-    public void delete(List<Integer> ids) {
-        if (dishDao.deleteBatchIds(ids)<=0) throw new BusinessException("删除不存在的菜品，操作失败！");
-    }
 
     /**
      * 分页查询
@@ -105,5 +94,15 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
         dishDao.update(entity,new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType,oldType));
     }
 
+    /**
+     * 验证分类是否存在
+     * @param typeId
+     */
+    private void verifyTypeExist(Integer typeId){
+        TypeEntity one = typeService.getOne(new LambdaQueryWrapper<TypeEntity>()
+                .eq(TypeEntity::getNumber, typeId));
+        if (one == null)
+            throw new BusinessException(ResultConstant.TYPE_NO_EXIST_EXCEPTION);
+    }
 
 }

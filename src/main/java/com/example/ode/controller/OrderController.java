@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.Result;
+import com.example.ode.dto.order.OrderDTO;
 import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,30 +28,24 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @RequestMapping("/add")
+    @PostMapping("/add")
     public Result add(@Validated @RequestBody OrderIns ins){
         orderService.add(ins);
         return Result.success();
     }
 
-    @GetMapping("/upd/{id}")
-    public Result updateStatus(@PathVariable("id")Long id){
-        orderService.updateStatus(id);
-        return Result.success();
-    }
-
-    @GetMapping("/cancel/{id}")
+    @RequestMapping("/cancel/{id}")
     public Result cancel(@PathVariable("id")Long id){
         orderService.cancelOrder(id);
         return Result.success();
     }
 
-    @GetMapping("/detail/{id}")
-    public Result detail(@PathVariable("id")Long id){
-        return Result.success(orderService.getById(id));
+    @RequestMapping("/detail")
+    public Result detail(@Validated @RequestBody OrderDTO orderDTO){
+        return Result.success(orderService.detail(orderDTO.getId(),orderDTO.getPageNum()));
     }
 
-    @PostMapping("/get")
+    @GetMapping("/get")
     public Result getOrders(@Validated @RequestBody OrderSearch search){
         return Result.success(orderService.getOrders(search));
     }

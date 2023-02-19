@@ -12,12 +12,16 @@ import com.example.ode.dto.order.OrderSearch;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.OrderDishEntity;
 import com.example.ode.entity.UserEntity;
+import com.example.ode.enums.DishStatus;
 import com.example.ode.enums.OrderStatus;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderDishService;
 import com.example.ode.service.UserService;
 import com.example.ode.util.ObjectUtils;
+import com.example.ode.vo.OrderDishVO;
+import com.example.ode.vo.OrderVO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,6 +74,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         List<DishDTO> dishes = ins.getDishes();
         BigDecimal total = new BigDecimal(0);
         for(DishDTO dish:dishes){
+            // 验证菜品是否存在
+            DishEntity entity = dishService.getById(dish.getId());
+            if (entity == null)
+                throw new BusinessException(ResultConstant.DISH_NO_EXIST_EXCEPTION);
             // 将订单菜品关系插入对应表中
             OrderDishEntity orderDishEntity = new OrderDishEntity();
             orderDishEntity.setOrderId(orderId);
@@ -78,7 +86,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             orderDishService.save(orderDishEntity);
             // 计算出总金额
             DishEntity dishEntity = dishService.getById(dish.getId());
-            total.add(dishEntity.getPrice().multiply(new BigDecimal(dish.getAmount())));
+            total = total.add(dishEntity.getPrice().multiply(new BigDecimal(dish.getAmount())));
         }
         // 修改订单其他相关信息
         orderEntity.setTotal(total);
@@ -109,9 +117,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderEntity order = orderDao.selectById(id);
         if (order == null) throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
         int status = order.getStatus();
-        if (status != OrderStatus.NOT_START.getCode()) throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
+        if (status != OrderStatus.NOT_START.getCode())
+            throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
         order.setStatus(OrderStatus.CANCELED.getCode());
         orderDao.updateById(order);
+        // 修改订单中所有菜品状态为已取消
+        OrderDishEntity entity = new OrderDishEntity();
+        entity.setStatus(DishStatus.CANCELED.getCode());
+        orderDishService.update(entity,new LambdaQueryWrapper<OrderDishEntity>().eq(OrderDishEntity::getOrderId,id));
+    }
+
+    @Override
+    public OrderVO detail(Long id,Integer pageNum) {
+        OrderEntity order = orderDao.selectById(id);
+        // 验证订单是否存在
+        if (order == null)
+            throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+        // 查询订单对应菜品的详细信息
+        List<OrderDishVO> dishes = orderDao.selectDishForOrder(id,(pageNum-1)*10);
+        MyPage<OrderDishVO> myPage = new MyPage<>();
+        myPage.setPageNum(pageNum);
+        myPage.setList(dishes);
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(order,orderVO);
+        orderVO.setDishes(myPage);
+        return orderVO;
     }
 
 
@@ -128,7 +158,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getTableId())),OrderEntity::getTableId,search.getTableId())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getStatus())),OrderEntity::getStatus,search.getStatus())
                 .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxTotal())),OrderEntity::getTotal,search.getMaxTotal())
-                .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getStatus,search.getMinTotal()));
+                .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getTotal,search.getMinTotal()));
         MyPage<OrderEntity> myPage = MyPage.createPage(orderPage);
         return myPage;
     }

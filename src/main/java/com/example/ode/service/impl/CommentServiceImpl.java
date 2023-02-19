@@ -97,14 +97,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         orderService.updateStatus(ins.getOrderId());
     }
 
-    /**
-     * 删除某条评论
-     * @param id
-     */
-    @Override
-    public void delete(Long id) {
-        commentDao.deleteById(id);
-    }
 
     /**
      * 分页查询评价

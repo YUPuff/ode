@@ -20,8 +20,6 @@ public interface DishService extends IService<DishEntity> {
 
     void update(DishUpd upd);
 
-    void delete(List<Integer> ids);
-
     MyPage<DishVO> getDishes(DishSearch search);
 
 
