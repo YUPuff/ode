@@ -27,8 +27,8 @@ public class WxService {
      * @return
      * @throws Exception
      */
-    public String wxDecrypt(String encryptedData,String iv,String key) throws Exception {
-        String s = redisTemplate.opsForValue().get(RedisConstant.WX_SESSION_ID+key);
+    public String wxDecrypt(String encryptedData,String iv,String s) throws Exception {
+        // 将生成的jsonStr转换成对象
         JSONObject object = JSON.parseObject(s);
         String sessionKey = (String) object.get("session_key");
         byte[] encryptedData_b = Base64.decode(encryptedData);

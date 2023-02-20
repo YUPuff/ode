@@ -12,6 +12,7 @@ import com.example.ode.constant.ResultConstant;
 import com.example.ode.dto.user.UserSearch;
 import com.example.ode.model.WXAuth;
 import com.example.ode.service.WxService;
+import com.example.ode.util.EncryptUtils;
 import com.example.ode.util.JWTUtils;
 import com.example.ode.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
@@ -53,39 +54,26 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     private UserDao userDao;
 
     /**
-     * 第一次微信登录请求，这时服务器只能知道用户的openId（哪一个用户）,需要二次请求带上加密数据借助微信服务器获取用户更多信息
-     *  1.前端微信小程序发送一串登录code
-     *  2.服务器接收后借助微信小程序后台API发送请求，获得用户session_key和open_id（实际是一个字符串），
-     *    自定义一个sessionId，将所有数据存在redis中
-     *  3.返回给前端sessionId，便于之后二次登录标识，解密信息数据
-     * @param code
-     * @return
-     */
-    @Override
-    public String login1(String code) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
-        String repUrl = url.replace("APPID",appid).replace("SECRET",secret).replace("JSCODE",code);
-        String s = HttpUtil.get(repUrl);
-        // 生成唯一标识并返回给前端临时存储
-        String key = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(RedisConstant.WX_SESSION_ID+key,s,10, TimeUnit.MINUTES);
-        return key;
-    }
-
-    /**
-     * 第二次微信登录请求
-     *  1.前端发送微信小程序生成的加密数据encryptedData和iv，以及第一次登录请求存储的唯一标识key
-     *  2.服务器解密数据，并借助微信服务器获取用户详细信息（用户名、性别、openId等）
-     *  3.根据openId到数据库中查询用户，如果有则更新已有用户详细信息，没有则添加新用户
-     *  4.使用jwt生成token令牌，伴随详细信息传回给前端
+     * 1.前端微信小程序发送一串登录code，以及微信小程序生成的加密数据encryptedData和iv
+     * 2.服务器接收后借助微信小程序后台API发送请求（此时使用code），获得用户session_key和open_id（实际是一个字符串）
+     * 3.服务器解密数据encryptedData和iv，以及之前生成的session_key，借助微信服务器获取用户详细信息（用户名、性别、openId等）
+     * 4.根据openId到数据库中查询用户，如果有则更新已有用户详细信息，没有则添加新用户
+     * 5.使用jwt生成token令牌，伴随详细信息传回给前端
      * @param wxAuth
      * @return
      */
     @Override
-    public UserVO login2(WXAuth wxAuth) {
+    public UserVO login(WXAuth wxAuth) {
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
+        String repUrl = url.replace("APPID",appid).replace("SECRET",secret).replace("JSCODE", wxAuth.getCode());
+        // 生成包含session_key和open_id的json字符串
+        String s = HttpUtil.get(repUrl);
         try {
-            String s = wxService.wxDecrypt(wxAuth.getEncryptedData(),wxAuth.getIv(),wxAuth.getKey());
-            WxUserInfo userInfo = JSON.parseObject(s, WxUserInfo.class);
+            // 借助微信平台解密后生成包含用户详细信息的json字符串
+            String info_s = wxService.wxDecrypt(wxAuth.getEncryptedData(),wxAuth.getIv(),s);
+            WxUserInfo userInfo = JSON.parseObject(info_s, WxUserInfo.class);
+            // 对用户openid先加密，再进行存储
+            userInfo.setOpenId(EncryptUtils.MD5EncryptMethod(userInfo.getOpenId()));
             String openId = userInfo.getOpenId();
             UserEntity oldUser = userDao.selectOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getOpenId, openId));
             UserEntity newUser = new UserEntity(userInfo);
@@ -100,7 +88,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             // 登录
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(newUser,userVO);
-            login(userVO);
+            loginForToken(userVO);
+            System.out.println(userVO);
             return userVO;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -113,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @return
      */
     @Override
-    public void login(UserVO userVO) {
+    public void loginForToken(UserVO userVO) {
         String token = JWTUtils.sign(userVO.getId());
         redisTemplate.opsForValue().set(RedisConstant.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
         userVO.setToken(token);
@@ -125,6 +114,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @return
      */
     public void add(UserEntity userEntity) {
+
         userDao.insert(userEntity);
         // 插入新记录后，userEntity的id会自动赋值
     }

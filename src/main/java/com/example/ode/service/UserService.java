@@ -14,11 +14,10 @@ import java.util.List;
  * @date 2023-02-08 17:35:28
  */
 public interface UserService extends IService<UserEntity> {
-    String login1(String code);
 
-    UserVO login2(WXAuth wxAuth);
+    UserVO login(WXAuth wxAuth);
 
-    void login(UserVO userVO);
+    void loginForToken(UserVO userVO);
 
     MyPage<UserVO> getUser(UserSearch search);
 }

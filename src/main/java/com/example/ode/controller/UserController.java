@@ -23,14 +23,10 @@ public class UserController {
     private UserService userService;
 
 
-    @RequestMapping("/login1")
-    public Result login1(String code){
-        return Result.success(userService.login1(code));
-    }
 
-    @PostMapping("/login2")
-    public Result login2(WXAuth wxAuth){
-        return Result.success(userService.login2(wxAuth));
+    @RequestMapping("/login")
+    public Result login(@RequestBody WXAuth wxAuth){
+        return Result.success(userService.login(wxAuth));
     }
 
 

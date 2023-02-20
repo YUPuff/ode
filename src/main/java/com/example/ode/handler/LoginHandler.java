@@ -37,7 +37,7 @@ public class LoginHandler implements HandlerInterceptor {
         // 有无需验证注解直接放行
         if (method.hasMethodAnnotation(NoAuth.class)) return true;
         // 从前端请求头中取出token，并验证其有效性
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("token");
         if (JWTUtils.verify(token)){
             String userJson = redisTemplate.opsForValue().get(RedisConstant.TOKEN+token);
             if (StringUtils.isNotBlank(userJson)){

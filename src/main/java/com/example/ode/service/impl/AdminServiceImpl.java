@@ -71,7 +71,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         }
         AdminVO adminVO = new AdminVO();
         BeanUtils.copyProperties(entity,adminVO);
-        userService.login(adminVO);
+        userService.loginForToken(adminVO);
         return adminVO;
     }
 
