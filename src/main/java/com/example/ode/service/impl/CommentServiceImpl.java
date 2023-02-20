@@ -11,6 +11,9 @@ import com.example.ode.dto.comment.CommentSearch;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.OrderEntity;
 import com.example.ode.entity.UserEntity;
+import com.example.ode.enums.CommentLevel;
+import com.example.ode.enums.CommentType;
+import com.example.ode.enums.OrderStatus;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderService;
 
@@ -60,6 +63,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         OrderEntity order = orderService.getById(ins.getOrderId());
         if (order == null)
             throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+        // 验证订单当前状态是否为“待评论”
+        if (order.getStatus() != OrderStatus.WAIT_TO_COMMENT.getCode())
+            throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
         // 处理各条分评论
         List<String> list = ins.getItems();
         for (String s:list){
@@ -67,15 +73,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
             int len = ss.length;
             // 存储类型/对象/等级的值
             // 验证格式长度是否合法
-            if (len<2 || len>3) throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+            if (len<2 || len>3)
+                throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
             int[] val = new int[len];
             // 验证类型、对象、等级是否均是数字
             for (int i=0;i<len;i++){
-                if (!StringUtils.isNumeric(ss[i])) throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+                if (!StringUtils.isNumeric(ss[i]))
+                    throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
                 val[i] = Integer.parseInt(ss[i]);
             }
             // 验证类型是否正确
-            if (val[0] == 1){
+            if (val[0] == CommentType.DISH.getCode()){
                 // 菜品评价有目标对象id
                 if (len == 3){
                     DishEntity dish = dishService.getById(val[1]);
@@ -84,7 +92,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
                     generateCommentAndInsert(ins, val);
                     continue;
                 }
-            }else if (val[0] == 2 || val[0] == 3){
+            }else if (val[0] == CommentType.SERVICE.getCode() || val[0] == CommentType.ENVIRONMENT.getCode()){
                 // 非菜品评价没有目标对象
                 if (len == 2){
                     generateCommentAndInsert(ins,val);
@@ -126,7 +134,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
     private void generateCommentAndInsert(CommentIns ins,int[] val){
         int len = val.length;
         // 评价等价有误
-        if (val[len-1]<0 || val[len-1]>2) throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+        if (val[len-1]< CommentLevel.BAD.getCode() || val[len-1]>CommentLevel.GOOD.getCode())
+            throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
         CommentEntity entity = new CommentEntity();
         entity.setOrderId(ins.getOrderId());
         entity.setUserId(ins.getUserId());

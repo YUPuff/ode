@@ -2,6 +2,7 @@ package com.example.ode.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -67,6 +68,7 @@ public class CommentEntity extends BaseEntity implements Serializable {
 	 * 是否删除（0：否，1：是）
 	 */
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
+	@TableLogic
 	private Integer isDel;
 
 

@@ -23,7 +23,7 @@ public class ResultConstant {
 
 
     public static final String ORDER_NO_EXIST_EXCEPTION = "订单不存在，操作失败！";
-    public static final String ORDER_CANT_EXCEPTION = "当前订单状态已无法修改，操作失败！";
+    public static final String ORDER_CANT_EXCEPTION = "当前订单状态无法修改，操作失败！";
 
 
     public static final String ORDER_DISH_NO_EXIST_EXCEPTION = "菜品不存在于订单中，操作失败！";
