@@ -15,6 +15,15 @@
         <result property="extra" column="extra"/>
     </resultMap>
 
+    <select id="getTop5Dishes" resultType="com.example.ode.vo.DishVO">
+        SELECT d.id id,d.name name,d.price price,d.pic pic,sum(od.amount) total
+        FROM t_dish d
+        INNER JOIN t_order_dish od ON d.id = od.dish_id
+        WHERE d.type != 0 AND od.add_time BETWEEN #{start} AND #{end}
+        GROUP BY od.dish_id
+        ORDER BY total DESC
+        LIMIT 5
+    </select>
 
 
 </mapper>

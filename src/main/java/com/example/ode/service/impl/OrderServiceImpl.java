@@ -72,7 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         Long orderId = orderEntity.getId();
         // 遍历菜品集合
         List<DishDTO> dishes = ins.getDishes();
-        BigDecimal total = new BigDecimal(0);
+//        BigDecimal total = new BigDecimal(0);
         for(DishDTO dish:dishes){
             // 验证菜品是否存在
             DishEntity entity = dishService.getById(dish.getId());
@@ -86,10 +86,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             orderDishService.save(orderDishEntity);
             // 计算出总金额
             DishEntity dishEntity = dishService.getById(dish.getId());
-            total = total.add(dishEntity.getPrice().multiply(new BigDecimal(dish.getAmount())));
+//            total = total.add(dishEntity.getPrice().multiply(new BigDecimal(dish.getAmount())));
         }
         // 修改订单其他相关信息
-        orderEntity.setTotal(total);
+//        orderEntity.setTotal(total);
         orderDao.updateById(orderEntity);
     }
 

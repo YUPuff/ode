@@ -23,4 +23,9 @@ public class DishVO {
      * 图片路径
      */
     private String pic;
+
+    /**
+     * 菜品原料
+     */
+    private String ingredient;
 }

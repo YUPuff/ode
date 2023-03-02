@@ -37,4 +37,9 @@ public class OrderDishController {
         return Result.success();
     }
 
+    @RequestMapping("/getTop5Dishes")
+    public Result getTop5Dishes(){
+        return Result.success(orderDishService.getTop5Dishes());
+    }
+
 }

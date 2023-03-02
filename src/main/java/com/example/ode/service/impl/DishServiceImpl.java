@@ -65,7 +65,7 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
 
 
     /**
-     * 分页查询
+     * 分页查询菜品
      * @param search
      * @return
      */

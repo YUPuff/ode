@@ -3,10 +3,13 @@ package com.example.ode.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.ode.common.BusinessException;
 import com.example.ode.constant.ResultConstant;
+import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.OrderEntity;
 import com.example.ode.enums.DishStatus;
 import com.example.ode.enums.OrderStatus;
+import com.example.ode.service.DishService;
 import com.example.ode.service.OrderService;
+import com.example.ode.vo.DishVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.ode.dao.OrderDishDao;
 import com.example.ode.entity.OrderDishEntity;
 import com.example.ode.service.OrderDishService;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 
 @Service("orderDishService")
@@ -25,6 +34,9 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private DishService dishService;
 
     /**
      * 修改菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
@@ -69,5 +81,33 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
             throw new BusinessException(ResultConstant.ORDER_DISH_CANT_EXCEPTION);
         entity.setStatus(DishStatus.CANCELED.getCode());
         orderDishDao.updateById(entity);
+        // 从总订单中删除当前菜品金额
+        DishEntity dish = dishService.getById(entity.getDishId());
+        OrderEntity order = orderService.getById(entity.getOrderId());
+        BigDecimal total = order.getTotal();
+        total = total.subtract(dish.getPrice().multiply(new BigDecimal(entity.getAmount())));
+        order.setTotal(total);
+        orderService.updateById(order);
+    }
+
+    /**
+     * 获取当月热销前5的菜品
+     * @return
+     */
+    @Override
+    public List<DishVO> getTop5Dishes() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String today = sdf.format(date);
+        System.out.println(today);
+        Calendar cld = Calendar.getInstance();
+        cld.setTime(date);
+        //月份+1，天设置为0。下个月第0天，就是这个月最后一天
+        cld.add(Calendar.MONTH, 1);
+        cld.set(Calendar.DAY_OF_MONTH, 0);
+        String end = sdf.format(cld.getTime());
+        cld.set(Calendar.DAY_OF_MONTH,1);
+        String start = sdf.format(cld.getTime());
+        return orderDishDao.getTop5Dishes(start,end);
     }
 }

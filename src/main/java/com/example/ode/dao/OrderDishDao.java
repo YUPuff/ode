@@ -2,7 +2,10 @@ package com.example.ode.dao;
 
 import com.example.ode.entity.OrderDishEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.ode.vo.DishVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 
 /**
@@ -12,4 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface OrderDishDao extends BaseMapper<OrderDishEntity> {
 
+    List<DishVO> getTop5Dishes(String start,String end);
 }

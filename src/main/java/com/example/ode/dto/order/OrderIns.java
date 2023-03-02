@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -32,4 +33,8 @@ public class OrderIns {
      * 订单备注
      */
     private String remark;
+
+
+    private BigDecimal total;
+
 }
