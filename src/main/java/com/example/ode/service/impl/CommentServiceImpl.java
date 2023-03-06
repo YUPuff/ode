@@ -142,7 +142,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         entity.setContent(ins.getContent());
         entity.setType(val[0]);
         entity.setLevel(val[len-1]);
-        if (len == 3) entity.setTarget(val[1]);
+        if (len == 3) entity.setTarget((long)val[1]);
         commentDao.insert(entity);
     }
 }

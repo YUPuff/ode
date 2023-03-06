@@ -27,7 +27,7 @@ public class DishEntity extends BaseEntity implements Serializable {
 	 */
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "菜品Id")
-	private Integer id;
+	private Long id;
 	/**
 	 * 菜品名
 	 */
@@ -86,6 +86,12 @@ public class DishEntity extends BaseEntity implements Serializable {
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
 	@TableLogic
 	private Integer isDel;
+
+	/**
+	 * 备用
+	 */
+	@ApiModelProperty(value = "备用")
+	private String extra;
 
 
 }

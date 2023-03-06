@@ -23,9 +23,4 @@ public class BaseEntity {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updTime;
 
-    /**
-     * 备用
-     */
-    @ApiModelProperty(value = "备用")
-    private String extra;
 }

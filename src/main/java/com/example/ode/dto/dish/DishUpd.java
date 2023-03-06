@@ -15,5 +15,5 @@ import javax.validation.constraints.NotNull;
 public class DishUpd extends DishIns{
 
     @NotNull(message = "id不能为空")
-    private Integer id;
+    private Long id;
 }

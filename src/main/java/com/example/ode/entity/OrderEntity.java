@@ -59,5 +59,10 @@ public class OrderEntity extends BaseEntity implements Serializable {
 	@ApiModelProperty(value = "订单备注")
 	private String remark;
 
+	/**
+	 * 就餐人数
+	 */
+	@ApiModelProperty(value = "就餐人数")
+	private Integer people;
 
 }

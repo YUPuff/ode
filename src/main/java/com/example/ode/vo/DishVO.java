@@ -1,6 +1,5 @@
 package com.example.ode.vo;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;

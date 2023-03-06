@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class DishDTO {
 
     @NotNull(message = "菜品id不能为空")
-    private Integer id;
+    private Long id;
 
     @NotNull(message = "菜品数量不能为空")
     @Min(value = 1,message = "菜品数量必须是正数")

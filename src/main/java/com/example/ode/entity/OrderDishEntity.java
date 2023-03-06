@@ -38,7 +38,7 @@ public class OrderDishEntity extends BaseEntity implements Serializable {
 	 * 菜品id
 	 */
 	@ApiModelProperty(value = "菜品id")
-	private Integer dishId;
+	private Long dishId;
 
 	/**
 	 * 菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
@@ -51,5 +51,10 @@ public class OrderDishEntity extends BaseEntity implements Serializable {
 	@ApiModelProperty(value = "数量")
 	private Integer amount;
 
+	/**
+	 * 备用
+	 */
+	@ApiModelProperty(value = "备用")
+	private String extra;
 
 }

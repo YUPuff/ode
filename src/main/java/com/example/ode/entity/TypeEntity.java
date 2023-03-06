@@ -46,5 +46,10 @@ public class TypeEntity extends BaseEntity implements Serializable {
 	@TableLogic
 	private Integer isDel;
 
+	/**
+	 * 备用
+	 */
+	@ApiModelProperty(value = "备用")
+	private String extra;
 
 }

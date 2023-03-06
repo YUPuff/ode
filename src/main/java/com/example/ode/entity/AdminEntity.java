@@ -60,5 +60,11 @@ public class AdminEntity extends BaseEntity implements Serializable {
 	 */
 	private String pic;
 
+	/**
+	 * 备用
+	 */
+	@ApiModelProperty(value = "备用")
+	private String extra;
+
 
 }

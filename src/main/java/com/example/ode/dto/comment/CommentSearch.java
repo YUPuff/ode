@@ -18,7 +18,7 @@ public class CommentSearch {
     /**
      * 目标id（如果此条评价是菜品评价的话，此列值不为空）
      */
-    private Integer target;
+    private Long target;
 
 
     /**

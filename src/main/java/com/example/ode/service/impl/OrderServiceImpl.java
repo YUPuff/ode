@@ -64,9 +64,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
 
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setTableId(ins.getTableId());
-        orderEntity.setUserId(ins.getUserId());
-        orderEntity.setRemark(ins.getRemark());
+        BeanUtils.copyProperties(ins,orderEntity);
         // 先插入订单表以获取生成的订单id
         orderDao.insert(orderEntity);
         Long orderId = orderEntity.getId();

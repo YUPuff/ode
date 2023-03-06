@@ -38,7 +38,7 @@ public class CommentEntity extends BaseEntity implements Serializable {
 	 * 目标id（如果此条评价是菜品评价的话，此列值不为空）
 	 */
 	@ApiModelProperty(value = "目标id（如果此条评价是菜品评价的话，此列值不为空）")
-	private Integer target;
+	private Long target;
 
 	/**
 	 * 订单id
@@ -70,6 +70,12 @@ public class CommentEntity extends BaseEntity implements Serializable {
 	@ApiModelProperty(value = "是否删除（0：否，1：是）")
 	@TableLogic
 	private Integer isDel;
+
+	/**
+	 * 备用
+	 */
+	@ApiModelProperty(value = "备用")
+	private String extra;
 
 
 }

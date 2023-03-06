@@ -13,7 +13,7 @@
         <result property="remark" column="remark"/>
         <result property="addTime" column="add_time"/>
         <result property="updTime" column="upd_time"/>
-        <result property="extra" column="extra"/>
+        <result property="people" column="people"/>
     </resultMap>
 
     <select id="selectDishForOrder" resultType="com.example.ode.vo.OrderDishVO">

@@ -30,7 +30,7 @@ public class DishIns {
      */
     @NotNull(message = "价格不能为空")
     @DecimalMin(value = "0", message = "价格必须为正数")
-    @Digits(integer = 7, fraction = 2, message = "价格整数位不能超过7个,小数位不能超过2个")
+    @Digits(integer = 7, fraction = 2, message=  "价格整数位不能超过7个,小数位不能超过2个")
     private BigDecimal price;
 
     /**
