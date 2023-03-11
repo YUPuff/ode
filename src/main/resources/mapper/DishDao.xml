@@ -25,5 +25,10 @@
         SELECT id,name,price,pic,ingredient FROM t_dish ${ew.customSqlSegment}
     </select>
 
+    <select id="selectOneDish" resultType="com.example.ode.vo.DishVO">
+        SELECT id,name,price,pic,ingredient FROM t_dish
+        WHERE id = #{dishId}
+    </select>
+
 
 </mapper>

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.ode.annotation.NoAuth;
 import com.example.ode.common.Result;
 import com.example.ode.common.UserThreadLocal;
-import com.example.ode.constant.RedisConstant;
+import com.example.ode.constant.RedisConstants;
 import com.example.ode.util.JWTUtils;
 import com.example.ode.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +39,7 @@ public class LoginHandler implements HandlerInterceptor {
         // 从前端请求头中取出token，并验证其有效性
         String token = request.getHeader("token");
         if (JWTUtils.verify(token)){
-            String userJson = redisTemplate.opsForValue().get(RedisConstant.TOKEN+token);
+            String userJson = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
             if (StringUtils.isNotBlank(userJson)){
                 // 将用户信息放在ThreadLocal中
                 UserVO userVO = JSON.parseObject(userJson, UserVO.class);

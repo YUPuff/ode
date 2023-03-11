@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.ResultConstants;
 import com.example.ode.dao.AdminDao;
 import com.example.ode.dto.admin.AdminIns;
 import com.example.ode.dto.admin.AdminSearch;
@@ -121,7 +121,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
     public AdminVO getOneAdmin(Integer id) {
         AdminEntity entity = adminDao.selectById(id);
         if (entity == null)
-            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
         AdminVO adminVO = new AdminVO();
         BeanUtils.copyProperties(entity,adminVO);
         return adminVO;
@@ -135,16 +135,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     private void verify(AdminEntity entity){
         if (entity == null){
-            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
         }
         // 账户被锁定
         else if (entity.getIsLock() == IsLock.LOCK.getCode())
-            throw new BusinessException(ResultConstant.USER_IS_LOCK_EXCEPTION);
+            throw new BusinessException(ResultConstants.USER_IS_LOCK_EXCEPTION);
         // 账户未生效
         else if (entity.getIsVal() == IsVal.NOT_VAL.getCode())
-            throw new BusinessException(ResultConstant.USER_IS_VAL_EXCEPTION);
+            throw new BusinessException(ResultConstants.USER_IS_VAL_EXCEPTION);
         // 账户被驳回
         else if (entity.getIsVal() == IsVal.REJECT.getCode())
-            throw new BusinessException(ResultConstant.USER_REJECT_EXCEPTION+entity.getExtra());
+            throw new BusinessException(ResultConstants.USER_REJECT_EXCEPTION+entity.getExtra());
     }
 }

@@ -1,6 +1,6 @@
 package com.example.ode.common;
 
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.ResultConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -65,7 +65,7 @@ public class Result <R> implements Serializable {
     }
 
     public static <R> Result<R> success(){
-        return message(ResultConstant.SUCCESS);
+        return message(ResultConstants.SUCCESS);
     }
 
     public static <R> Result<R> success(R data,String message){

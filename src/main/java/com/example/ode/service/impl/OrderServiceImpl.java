@@ -5,18 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.dish.DishDTO;
 import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
-import com.example.ode.entity.DishEntity;
-import com.example.ode.entity.OrderDishEntity;
-import com.example.ode.entity.UserEntity;
+import com.example.ode.entity.*;
 import com.example.ode.enums.DishStatus;
 import com.example.ode.enums.OrderStatus;
-import com.example.ode.service.DishService;
-import com.example.ode.service.OrderDishService;
-import com.example.ode.service.UserService;
+import com.example.ode.service.*;
 import com.example.ode.util.ObjectUtils;
 import com.example.ode.vo.OrderDishVO;
 import com.example.ode.vo.OrderVO;
@@ -28,8 +24,6 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.ode.dao.OrderDao;
-import com.example.ode.entity.OrderEntity;
-import com.example.ode.service.OrderService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -51,6 +45,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RecommendService recommendService;
+
     /**
      * 添加新订单
      * @param ins
@@ -61,7 +58,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         // 验证用户是否存在
         UserEntity user = userService.getById(ins.getUserId());
         if (user == null)
-            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
 
         OrderEntity orderEntity = new OrderEntity();
         BeanUtils.copyProperties(ins,orderEntity);
@@ -75,20 +72,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             // 验证菜品是否存在
             DishEntity entity = dishService.getById(dish.getId());
             if (entity == null)
-                throw new BusinessException(ResultConstant.DISH_NO_EXIST_EXCEPTION);
+                throw new BusinessException(ResultConstants.DISH_NO_EXIST_EXCEPTION);
             // 将订单菜品关系插入对应表中
             OrderDishEntity orderDishEntity = new OrderDishEntity();
             orderDishEntity.setOrderId(orderId);
             orderDishEntity.setDishId(dish.getId());
             orderDishEntity.setAmount(dish.getAmount());
             orderDishService.save(orderDishEntity);
-            // 计算出总金额
-            DishEntity dishEntity = dishService.getById(dish.getId());
-//            total = total.add(dishEntity.getPrice().multiply(new BigDecimal(dish.getAmount())));
+
+            // 将用户和菜品关系更新到推荐表中
+                // 判断用户之前是否点过该菜品
+            LambdaQueryWrapper<RecommendEntity> wrapper = new LambdaQueryWrapper<RecommendEntity>()
+                    .eq(RecommendEntity::getUserId, ins.getUserId())
+                    .eq(RecommendEntity::getDishId, dish.getId());
+            RecommendEntity recommendEntity = recommendService.getOne(wrapper);
+            if (recommendEntity == null){
+                // 用户从未点过该菜品，新增记录
+                recommendEntity = new RecommendEntity();
+                recommendEntity.setUserId(ins.getUserId());
+                recommendEntity.setDishId(dish.getId());
+                recommendEntity.setCount(dish.getAmount());
+                recommendService.save(recommendEntity);
+            }else {
+                // 用户曾点过该菜品，更新记录
+                recommendEntity.setCount(recommendEntity.getCount()+dish.getAmount());
+                recommendService.update(recommendEntity,wrapper);
+            }
+
         }
-        // 修改订单其他相关信息
-//        orderEntity.setTotal(total);
-        orderDao.updateById(orderEntity);
     }
 
     /**
@@ -99,9 +110,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     public void updateStatus(Long id) {
         OrderEntity order = orderDao.selectById(id);
-        if (order == null) throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+        if (order == null) throw new BusinessException(ResultConstants.ORDER_NO_EXIST_EXCEPTION);
         int status = order.getStatus();
-        if (status == OrderStatus.FINISHED.getCode() || status == OrderStatus.CANCELED.getCode()) throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
+        if (status == OrderStatus.FINISHED.getCode() || status == OrderStatus.CANCELED.getCode()) throw new BusinessException(ResultConstants.ORDER_CANT_EXCEPTION);
         order.setStatus(status+1);
         orderDao.updateById(order);
     }
@@ -113,16 +124,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     public void cancelOrder(Long id) {
         OrderEntity order = orderDao.selectById(id);
-        if (order == null) throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+        if (order == null)
+            throw new BusinessException(ResultConstants.ORDER_NO_EXIST_EXCEPTION);
         int status = order.getStatus();
         if (status != OrderStatus.NOT_START.getCode())
-            throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
+            throw new BusinessException(ResultConstants.ORDER_CANT_EXCEPTION);
         order.setStatus(OrderStatus.CANCELED.getCode());
         orderDao.updateById(order);
-        // 修改订单中所有菜品状态为已取消
-        OrderDishEntity entity = new OrderDishEntity();
-        entity.setStatus(DishStatus.CANCELED.getCode());
-        orderDishService.update(entity,new LambdaQueryWrapper<OrderDishEntity>().eq(OrderDishEntity::getOrderId,id));
+        // 取消订单中所有菜品
+        List<OrderDishEntity> list = orderDishService.list(new LambdaQueryWrapper<OrderDishEntity>()
+                .eq(OrderDishEntity::getOrderId,id));
+        for (OrderDishEntity entity : list) {
+            orderDishService.cancelDish(entity.getId());
+        }
+
     }
 
     @Override
@@ -130,7 +145,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderEntity order = orderDao.selectById(id);
         // 验证订单是否存在
         if (order == null)
-            throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.ORDER_NO_EXIST_EXCEPTION);
         // 查询订单对应菜品的详细信息
         List<OrderDishVO> dishes = orderDao.selectDishForOrder(id,(pageNum-1)*10);
         MyPage<OrderDishVO> myPage = new MyPage<>();

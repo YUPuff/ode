@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.comment.CommentIns;
 import com.example.ode.dto.comment.CommentSearch;
 import com.example.ode.entity.DishEntity;
@@ -58,14 +58,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         // 验证用户是否存在
         UserEntity user = userService.getById(ins.getUserId());
         if (user == null)
-            throw new BusinessException(ResultConstant.USER_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
         // 验证订单是否存在
         OrderEntity order = orderService.getById(ins.getOrderId());
         if (order == null)
-            throw new BusinessException(ResultConstant.ORDER_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.ORDER_NO_EXIST_EXCEPTION);
         // 验证订单当前状态是否为“待评论”
         if (order.getStatus() != OrderStatus.WAIT_TO_COMMENT.getCode())
-            throw new BusinessException(ResultConstant.ORDER_CANT_EXCEPTION);
+            throw new BusinessException(ResultConstants.ORDER_CANT_EXCEPTION);
         // 处理各条分评论
         List<String> list = ins.getItems();
         for (String s:list){
@@ -74,12 +74,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
             // 存储类型/对象/等级的值
             // 验证格式长度是否合法
             if (len<2 || len>3)
-                throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+                throw new BusinessException(ResultConstants.COMMENT_PATTERN_EXCEPTION);
             int[] val = new int[len];
             // 验证类型、对象、等级是否均是数字
             for (int i=0;i<len;i++){
                 if (!StringUtils.isNumeric(ss[i]))
-                    throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+                    throw new BusinessException(ResultConstants.COMMENT_PATTERN_EXCEPTION);
                 val[i] = Integer.parseInt(ss[i]);
             }
             // 验证类型是否正确
@@ -88,7 +88,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
                 if (len == 3){
                     DishEntity dish = dishService.getById(val[1]);
                     // 评价的菜品不存在
-                    if (dish == null) throw new BusinessException(ResultConstant.DISH_NO_EXIST_EXCEPTION);
+                    if (dish == null) throw new BusinessException(ResultConstants.DISH_NO_EXIST_EXCEPTION);
                     generateCommentAndInsert(ins, val);
                     continue;
                 }
@@ -99,7 +99,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
                     continue;
                 }
             }
-            throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+            throw new BusinessException(ResultConstants.COMMENT_PATTERN_EXCEPTION);
         }
         // 用户完成评价后，需要修改订单状态
         orderService.updateStatus(ins.getOrderId());
@@ -135,7 +135,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         int len = val.length;
         // 评价等价有误
         if (val[len-1]< CommentLevel.BAD.getCode() || val[len-1]>CommentLevel.GOOD.getCode())
-            throw new BusinessException(ResultConstant.COMMENT_PATTERN_EXCEPTION);
+            throw new BusinessException(ResultConstants.COMMENT_PATTERN_EXCEPTION);
+        // 创建评论对象
         CommentEntity entity = new CommentEntity();
         entity.setOrderId(ins.getOrderId());
         entity.setUserId(ins.getUserId());

@@ -39,6 +39,7 @@ public class DishController {
 
     @RequestMapping("/del")
     public Result delete(@RequestBody List<Long> ids){
+
         dishService.removeByIds(ids);
         return Result.success();
     }

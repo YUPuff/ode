@@ -2,13 +2,15 @@ package com.example.ode.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.ode.common.BusinessException;
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.ResultConstants;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.OrderEntity;
+import com.example.ode.entity.RecommendEntity;
 import com.example.ode.enums.DishStatus;
 import com.example.ode.enums.OrderStatus;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderService;
+import com.example.ode.service.RecommendService;
 import com.example.ode.vo.DishVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,9 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
     @Autowired
     private DishService dishService;
 
+    @Autowired
+    private RecommendService recommendService;
+
     /**
      * 修改菜品状态（0：未烹饪，1：烹饪中，2：待上菜，3：已完成，4：已取消）
      *
@@ -46,10 +51,10 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
     @Override
     public void updateStatus(Long id) {
         OrderDishEntity entity = orderDishDao.selectById(id);
-        if (entity == null) throw new BusinessException(ResultConstant.ORDER_DISH_NO_EXIST_EXCEPTION);
+        if (entity == null) throw new BusinessException(ResultConstants.ORDER_DISH_NO_EXIST_EXCEPTION);
         int status = entity.getStatus();
         if (status == DishStatus.FINISHED.getCode() || status == DishStatus.CANCELED.getCode())
-            throw new BusinessException(ResultConstant.ORDER_DISH_CANT_EXCEPTION);
+            throw new BusinessException(ResultConstants.ORDER_DISH_CANT_EXCEPTION);
         entity.setStatus(status+1);
         orderDishDao.updateById(entity);
         // 如果订单第一道菜开始烹饪、最后一道菜完成烹饪则分别修改订单状态
@@ -74,20 +79,36 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
     public void cancelDish(Long id) {
         // 验证是否有对应存在的订单
         OrderDishEntity entity = orderDishDao.selectById(id);
-        if (entity == null) throw new BusinessException(ResultConstant.ORDER_DISH_NO_EXIST_EXCEPTION);
+        if (entity == null)
+            throw new BusinessException(ResultConstants.ORDER_DISH_NO_EXIST_EXCEPTION);
         int status = entity.getStatus();
         // 只有未烹饪的菜品才能被取消
         if (status != DishStatus.WAIT_TO_COOK.getCode())
-            throw new BusinessException(ResultConstant.ORDER_DISH_CANT_EXCEPTION);
+            throw new BusinessException(ResultConstants.ORDER_DISH_CANT_EXCEPTION);
         entity.setStatus(DishStatus.CANCELED.getCode());
         orderDishDao.updateById(entity);
         // 从总订单中删除当前菜品金额
-        DishEntity dish = dishService.getById(entity.getDishId());
+        Long dishId = entity.getDishId();
+        DishEntity dish = dishService.getById(dishId);
         OrderEntity order = orderService.getById(entity.getOrderId());
         BigDecimal total = order.getTotal();
         total = total.subtract(dish.getPrice().multiply(new BigDecimal(entity.getAmount())));
         order.setTotal(total);
         orderService.updateById(order);
+        // 从推荐表中更新或删除用户-菜品记录
+        Long userId = order.getUserId();
+        LambdaQueryWrapper<RecommendEntity> wrapper = new LambdaQueryWrapper<RecommendEntity>()
+                .eq(RecommendEntity::getUserId, userId).eq(RecommendEntity::getDishId, dishId);
+        RecommendEntity recommendEntity = recommendService.getOne(wrapper);
+        // 判断需要更新还是删除
+        if (recommendEntity.getCount() == entity.getAmount()){
+            // 撤销菜品就是本次点单的菜品
+            recommendService.remove(wrapper);
+        }else{
+            // 还有历史点此菜品的记录
+            recommendEntity.setCount(recommendEntity.getCount()-entity.getAmount());
+            recommendService.update(recommendEntity,wrapper);
+        }
     }
 
     /**

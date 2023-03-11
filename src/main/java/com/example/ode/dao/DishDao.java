@@ -17,4 +17,6 @@ import org.apache.ibatis.annotations.Param;
 public interface DishDao extends BaseMapper<DishEntity> {
 
     IPage<DishVO> selectMyPage(IPage<DishEntity> page, @Param(Constants.WRAPPER) Wrapper<DishEntity> queryWrapper);
+
+    DishVO selectOneDish(Long dishId);
 }

@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.dish.DishIns;
 import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
+import com.example.ode.entity.RecommendEntity;
 import com.example.ode.entity.TypeEntity;
+import com.example.ode.service.RecommendService;
 import com.example.ode.service.TypeService;
 import com.example.ode.util.ObjectUtils;
 import com.example.ode.vo.DishVO;
@@ -37,6 +39,9 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
     @Autowired
     private TypeService typeService;
 
+    @Autowired
+    private RecommendService recommendService;
+
     /**
      * 增加单个菜品
      * @param ins
@@ -57,7 +62,8 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
     @Override
     public void update(DishUpd upd) {
         DishEntity entity = dishDao.selectById(upd.getId());
-        if (entity == null) throw new BusinessException(ResultConstant.DISH_NO_EXIST_EXCEPTION);
+        if (entity == null)
+            throw new BusinessException(ResultConstants.DISH_NO_EXIST_EXCEPTION);
         verifyTypeExist(upd.getType());
         BeanUtils.copyProperties(upd,entity);
         dishDao.updateById(entity);
@@ -94,6 +100,26 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
         dishDao.update(entity,new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType,oldType));
     }
 
+    @Override
+    public DishVO getOneDish(Long dishId) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void delete(List<Long> ids) {
+        for (Long id : ids) {
+            // 判断菜品id是否存在
+            DishEntity dishEntity = dishDao.selectById(id);
+            if (dishEntity == null)
+                throw new BusinessException(ResultConstants.DISH_NO_EXIST_EXCEPTION);
+            // 删除推荐表中菜品相关所有记录
+            recommendService.remove(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getDishId,id));
+            // 删除菜品表中记录
+            dishDao.deleteById(id);
+        }
+    }
+
     /**
      * 验证分类是否存在
      * @param typeId
@@ -102,7 +128,7 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
         TypeEntity one = typeService.getOne(new LambdaQueryWrapper<TypeEntity>()
                 .eq(TypeEntity::getNumber, typeId));
         if (one == null)
-            throw new BusinessException(ResultConstant.TYPE_NO_EXIST_EXCEPTION);
+            throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
     }
 
 }

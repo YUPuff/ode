@@ -5,12 +5,15 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
 import com.example.ode.common.WxUserInfo;
-import com.example.ode.constant.RedisConstant;
-import com.example.ode.constant.ResultConstant;
+import com.example.ode.constant.RedisConstants;
+import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.user.UserSearch;
+import com.example.ode.entity.RecommendEntity;
 import com.example.ode.model.WXAuth;
+import com.example.ode.service.RecommendService;
 import com.example.ode.service.WxService;
 import com.example.ode.util.EncryptUtils;
 import com.example.ode.util.JWTUtils;
@@ -49,6 +52,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Autowired
     private WxService wxService;
+
+    @Autowired
+    private RecommendService recommendService;
 
     @Autowired
     private UserDao userDao;
@@ -104,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Override
     public void loginForToken(UserVO userVO) {
         String token = JWTUtils.sign(userVO.getId());
-        redisTemplate.opsForValue().set(RedisConstant.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(RedisConstants.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
         userVO.setToken(token);
     }
 
@@ -144,5 +150,21 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         MyPage<UserVO> myPage = MyPage.createPage(userPage);
 
         return myPage;
+    }
+
+    @Override
+    @Transactional
+    public void delete(List<Long> ids) {
+        for (Long id : ids) {
+            // 判断用户是否存在
+            UserEntity user = userDao.selectById(id);
+            if (user == null)
+                throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
+            // 删除推荐表中用户相关记录
+            recommendService.remove(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getUserId,id));
+            // 删除用户
+            userDao.deleteById(id);
+        }
+
     }
 }

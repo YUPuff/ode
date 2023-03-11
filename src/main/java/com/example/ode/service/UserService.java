@@ -20,5 +20,7 @@ public interface UserService extends IService<UserEntity> {
     void loginForToken(UserVO userVO);
 
     MyPage<UserVO> getUser(UserSearch search);
+
+    void delete(List<Long> ids);
 }
 

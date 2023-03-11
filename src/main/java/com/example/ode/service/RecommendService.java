@@ -5,7 +5,6 @@ import com.example.ode.entity.RecommendEntity;
 import com.example.ode.vo.DishVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yilin
@@ -13,6 +12,9 @@ import java.util.Map;
  */
 public interface RecommendService extends IService<RecommendEntity> {
 
-    List<DishVO> recommend(Long userId);
+
+    List<DishVO> recommend(Long userId) throws Exception;
+
+
 }
 

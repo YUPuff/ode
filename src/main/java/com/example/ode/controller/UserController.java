@@ -32,7 +32,7 @@ public class UserController {
 
     @RequestMapping("/del")
     public Result del(@RequestBody List<Long> ids){
-        userService.removeBatchByIds(ids);
+        userService.delete(ids);
         return Result.success();
     }
 

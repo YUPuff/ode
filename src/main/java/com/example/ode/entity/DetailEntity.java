@@ -25,13 +25,13 @@ public class DetailEntity implements Serializable {
 	 * 
 	 */
 	@TableId
-	@ApiModelProperty(value = "")
 	private String id;
 	/**
 	 * 
 	 */
 	@ApiModelProperty(value = "")
 	private Long orderId;
+
 	/**
 	 * 
 	 */
