@@ -7,6 +7,7 @@ import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
 import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.dish.DishDTO;
+import com.example.ode.dto.order.OrderDTO;
 import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
 import com.example.ode.entity.*;
@@ -141,15 +142,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     @Override
-    public OrderVO detail(Long id,Integer pageNum) {
+    public OrderVO detail(OrderDTO orderDTO) {
+        Long id = orderDTO.getId();
+        Integer pageNum = orderDTO.getPageNum();
+        Integer pageSize = orderDTO.getPageSize();
+        // 先查订单大体信息
         OrderEntity order = orderDao.selectById(id);
         // 验证订单是否存在
         if (order == null)
             throw new BusinessException(ResultConstants.ORDER_NO_EXIST_EXCEPTION);
         // 查询订单对应菜品的详细信息
-        List<OrderDishVO> dishes = orderDao.selectDishForOrder(id,(pageNum-1)*10);
+        List<OrderDishVO> dishes = orderDao.selectDishForOrder(id,(pageNum-1)*10,pageSize);
         MyPage<OrderDishVO> myPage = new MyPage<>();
         myPage.setPageNum(pageNum);
+        myPage.setPageSize(pageSize);
         myPage.setList(dishes);
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(order,orderVO);
@@ -171,7 +177,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getTableId())),OrderEntity::getTableId,search.getTableId())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getStatus())),OrderEntity::getStatus,search.getStatus())
                 .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxTotal())),OrderEntity::getTotal,search.getMaxTotal())
-                .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getTotal,search.getMinTotal()));
+                .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getTotal,search.getMinTotal())
+                .orderByDesc(OrderEntity::getAddTime));
         MyPage<OrderEntity> myPage = MyPage.createPage(orderPage);
         return myPage;
     }

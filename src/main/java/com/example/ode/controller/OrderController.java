@@ -42,10 +42,10 @@ public class OrderController {
 
     @RequestMapping("/detail")
     public Result detail(@Validated @RequestBody OrderDTO orderDTO){
-        return Result.success(orderService.detail(orderDTO.getId(),orderDTO.getPageNum()));
+        return Result.success(orderService.detail(orderDTO));
     }
 
-    @GetMapping("/get")
+    @RequestMapping("/get")
     public Result getOrders(@Validated @RequestBody OrderSearch search){
         return Result.success(orderService.getOrders(search));
     }

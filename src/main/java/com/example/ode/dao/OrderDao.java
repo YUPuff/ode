@@ -16,5 +16,7 @@ import java.util.List;
 @Mapper
 public interface OrderDao extends BaseMapper<OrderEntity> {
 
-    List<OrderDishVO> selectDishForOrder(@Param("orderId")Long orderId, @Param("pageNum")Integer pageNum);
+    List<OrderDishVO> selectDishForOrder(@Param("orderId")Long orderId,
+                                         @Param("pageNum")Integer pageNum,
+                                         @Param("pageSize")Integer pageSize);
 }

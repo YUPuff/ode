@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
  **/
 
 
-@Slf4j
 public class MyRecommender {
 
 

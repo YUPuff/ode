@@ -24,4 +24,10 @@ public class OrderDTO {
     @NotNull(message = "当前页码不能为空")
     private Integer pageNum;
 
+    /**
+     * 当前页大小
+     */
+    @NotNull(message = "当前页大小不能为空")
+    private Integer pageSize;
+
 }

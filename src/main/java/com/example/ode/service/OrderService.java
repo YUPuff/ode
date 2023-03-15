@@ -2,6 +2,7 @@ package com.example.ode.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.ode.common.MyPage;
+import com.example.ode.dto.order.OrderDTO;
 import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
 import com.example.ode.entity.OrderEntity;
@@ -21,7 +22,7 @@ public interface OrderService extends IService<OrderEntity> {
 
     void cancelOrder(Long id);
 
-    OrderVO detail(Long id,Integer pageNum);
+    OrderVO detail(OrderDTO orderDTO);
 
     MyPage<OrderEntity> getOrders(OrderSearch search);
 

@@ -22,7 +22,7 @@
                  INNER JOIN t_order_dish od ON d.id = od.dish_id
                  INNER JOIN t_order o ON od.order_id = o.id
         WHERE o.id = #{orderId,jdbcType=BIGINT}
-        limit #{pageNum,jdbcType=INTEGER},10
+        limit #{pageNum,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
     </select>
 
 </mapper>
