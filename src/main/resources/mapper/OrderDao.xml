@@ -17,7 +17,7 @@
     </resultMap>
 
     <select id="selectDishForOrder" resultType="com.example.ode.vo.OrderDishVO">
-        SELECT d.id id,d.name name,d.price price,d.pic pic,od.amount amount
+        SELECT d.id id,d.name name,d.price price,d.pic pic,od.amount amount,od.status status
         FROM t_dish d
                  INNER JOIN t_order_dish od ON d.id = od.dish_id
                  INNER JOIN t_order o ON od.order_id = o.id

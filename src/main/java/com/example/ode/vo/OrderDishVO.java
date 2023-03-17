@@ -33,4 +33,9 @@ public class OrderDishVO {
      * 点菜数
      */
     private Integer amount;
+
+    /**
+     * 状态
+     */
+    private Integer status;
 }

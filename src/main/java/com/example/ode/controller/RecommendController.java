@@ -25,8 +25,13 @@ public class RecommendController {
     private RecommendService recommendService;
 
     @GetMapping("/{id}")
-    public Result ucn(@PathVariable("id")Long id) throws Exception {
+    public Result recommend(@PathVariable("id")Long id) throws Exception {
         return Result.success(recommendService.recommend(id));
+    }
+
+    @GetMapping("/records/{id}")
+    public Result getRecords(@PathVariable("id")Long id){
+        return Result.success(recommendService.getRecordsForUser(id));
     }
 
 }

@@ -14,4 +14,14 @@
     </resultMap>
 
 
+    <select id="getRecordsForUser" resultType="com.example.ode.vo.RecommendVO">
+        SELECT r.dish_id dishId,d.name dishName,d.pic dishPic,sum(r.count) amount
+        FROM t_recommend r
+        INNER JOIN t_dish d ON r.dish_id = d.id
+        WHERE r.user_id = #{userId,jdbcType=BIGINT}
+        GROUP BY r.dish_id
+        ORDER BY sum(r.count) DESC
+    </select>
+
+
 </mapper>

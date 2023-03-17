@@ -11,6 +11,7 @@ import com.example.ode.service.DishService;
 import com.example.ode.service.OrderDishService;
 import com.example.ode.service.UserService;
 import com.example.ode.vo.DishVO;
+import com.example.ode.vo.RecommendVO;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.common.RandomUtils;
@@ -24,9 +25,7 @@ import com.example.ode.entity.RecommendEntity;
 import com.example.ode.service.RecommendService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service("recommendService")
@@ -83,6 +82,14 @@ public class RecommendServiceImpl extends ServiceImpl<RecommendDao, RecommendEnt
         return dishes;
     }
 
+    @Override
+    public List<RecommendVO> getRecordsForUser(Long userId) {
+        // 检查用户是否存在
+        UserEntity user = userService.getById(userId);
+        if (user == null)
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
+        return recommendDao.getRecordsForUser(userId);
+    }
 
 
 }

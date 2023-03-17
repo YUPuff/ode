@@ -3,6 +3,7 @@ package com.example.ode.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.ode.entity.RecommendEntity;
 import com.example.ode.vo.DishVO;
+import com.example.ode.vo.RecommendVO;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface RecommendService extends IService<RecommendEntity> {
 
     List<DishVO> recommend(Long userId) throws Exception;
 
-
+    List<RecommendVO> getRecordsForUser(Long userId);
 }
 
