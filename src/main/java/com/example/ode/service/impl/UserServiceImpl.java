@@ -120,7 +120,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @return
      */
     public void add(UserEntity userEntity) {
-
         userDao.insert(userEntity);
         // 插入新记录后，userEntity的id会自动赋值
     }

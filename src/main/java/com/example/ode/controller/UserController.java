@@ -18,6 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("user")
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -41,5 +42,9 @@ public class UserController {
         return Result.success(userService.getUser(search));
     }
 
+    @RequestMapping("/logout")
+    public Result logout(){
+        return null;
+    }
 
 }

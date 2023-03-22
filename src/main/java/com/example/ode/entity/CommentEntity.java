@@ -1,11 +1,9 @@
 package com.example.ode.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +16,7 @@ import lombok.Data;
 @Data
 @TableName("t_comment")
 @ApiModel(value = "Comment对象")
-public class CommentEntity extends BaseEntity implements Serializable {
+public class CommentEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -65,17 +63,11 @@ public class CommentEntity extends BaseEntity implements Serializable {
 	private Integer level;
 
 	/**
-	 * 是否删除（0：否，1：是）
+	 * 创建时间
 	 */
-	@ApiModelProperty(value = "是否删除（0：否，1：是）")
-	@TableLogic
-	private Integer isDel;
-
-	/**
-	 * 备用
-	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
+	@ApiModelProperty(value = "创建时间")
+	@TableField(fill = FieldFill.INSERT)
+	private Date addTime;
 
 
 }

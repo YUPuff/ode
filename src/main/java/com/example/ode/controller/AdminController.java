@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
  */
 @RestController
 @RequestMapping("admin")
+@CrossOrigin
 public class AdminController {
     @Autowired
     private AdminService adminService;
@@ -65,6 +66,11 @@ public class AdminController {
     @RequestMapping("/get")
     public Result getAdmins(@Validated @RequestBody AdminSearch search){
         return Result.success(adminService.getAdmins(search));
+    }
+
+    @RequestMapping("/logout")
+    public Result logout(){
+        return null;
     }
 
     @RequestMapping("/upload")

@@ -1,8 +1,5 @@
 package com.example.ode.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
 
 import com.example.ode.common.Result;
 import com.example.ode.dto.type.TypeIns;
@@ -12,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.ode.entity.TypeEntity;
 import com.example.ode.service.TypeService;
 
 
@@ -23,6 +19,7 @@ import com.example.ode.service.TypeService;
  */
 @RestController
 @RequestMapping("type")
+@CrossOrigin
 public class TypeController {
     @Autowired
     private TypeService typeService;

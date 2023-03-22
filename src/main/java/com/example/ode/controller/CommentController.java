@@ -18,6 +18,7 @@ import com.example.ode.service.CommentService;
  */
 @RestController
 @RequestMapping("comment")
+@CrossOrigin
 public class CommentController {
     @Autowired
     private CommentService commentService;

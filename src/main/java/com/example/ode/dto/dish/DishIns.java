@@ -58,9 +58,9 @@ public class DishIns {
     private Integer size;
 
     /**
-     * 菜品食材
+     * 简介
      */
-    private String ingredient;
+    private String intro;
 
     /**
      * 菜品具体介绍

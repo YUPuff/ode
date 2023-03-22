@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
-      max-file-size: 20MB
+      max-file-size: 20MB     # 可以上传的最大文件大小
       max-request-size: 100MB
 
   redis:

@@ -8,7 +8,7 @@
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="price" column="price"/>
-        <result property="ingredient" column="ingredient"/>
+        <result property="intro" column="intro"/>
         <result property="spicy" column="spicy"/>
         <result property="salt" column="salt"/>
         <result property="size" column="size"/>
@@ -22,11 +22,11 @@
     </resultMap>
 
     <select id="selectMyPage" resultType="com.example.ode.vo.DishVO">
-        SELECT id,name,price,pic,ingredient FROM t_dish ${ew.customSqlSegment}
+        SELECT id,name,price,pic,intro FROM t_dish ${ew.customSqlSegment}
     </select>
 
     <select id="selectOneDish" resultType="com.example.ode.vo.DishVO">
-        SELECT id,name,price,pic,ingredient FROM t_dish
+        SELECT id,name,price,pic,intro FROM t_dish
         WHERE id = #{dishId}
     </select>
 

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.example.ode.common.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import com.example.ode.service.OrderDishService;
  */
 @RestController
 @RequestMapping("orderDish")
+@CrossOrigin
 public class OrderDishController {
     @Autowired
     private OrderDishService orderDishService;

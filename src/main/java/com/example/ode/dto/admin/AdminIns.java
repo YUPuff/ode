@@ -26,7 +26,7 @@ public class AdminIns {
     @ApiModelProperty(value = "用户名")
     @NotBlank(message = "用户名不能为空")
     @Length(message = "用户名不能超过{max}个字符",max = 30)
-    private String name;
+    private String username;
 
     /**
      * 密码

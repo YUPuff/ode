@@ -48,16 +48,6 @@ public class UserEntity extends BaseEntity implements Serializable{
 	private String gender;
 
 	/**
-	 * 省份
-	 */
-	@ApiModelProperty(value = "省份")
-	private String province;
-	/**
-	 * 城市
-	 */
-	@ApiModelProperty(value = "城市")
-	private String city;
-	/**
 	 * 头像路径
 	 */
 	@ApiModelProperty(value = "头像路径")
@@ -80,8 +70,6 @@ public class UserEntity extends BaseEntity implements Serializable{
 		this.openId = userInfo.getOpenId();
 		this.name = userInfo.getNickName();
 		this.pic = userInfo.getAvatarUrl();
-		this.province = userInfo.getProvince();
-		this.city = userInfo.getCity();
 		this.gender = userInfo.getGender();
 	}
 

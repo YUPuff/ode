@@ -44,7 +44,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     @Override
     public void signup(AdminIns ins) {
-        AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getName()));
+        AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getUsername()));
         if (entity == null){
             entity = new AdminEntity();
             BeanUtils.copyProperties(ins,entity);
@@ -64,7 +64,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     @Override
     public AdminVO login(AdminIns ins) {
-        AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getName()));
+        AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getUsername()));
         verify(entity);
         if (!ins.getPassword().equals(entity.getPassword())){
             throw new BusinessException("密码错误，请重试！");

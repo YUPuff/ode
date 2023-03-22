@@ -1,5 +1,6 @@
 package com.example.ode.common;
 
+import com.example.ode.constant.ResultCodeConstants;
 import com.example.ode.constant.ResultConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,13 +20,13 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Result <R> implements Serializable {
+public class Result <R> implements Serializable, ResultCodeConstants {
     private static final long serialVersionUID = 7574078101944305355L;
 
     /**
      *  状态码
      */
-    private String code;
+    private Integer code;
 
     /**
      *  返回信息
@@ -43,29 +44,31 @@ public class Result <R> implements Serializable {
     private Map<String, Object> otherData = new HashMap();
 
 
-    public Result(String code){this.code = code;}
+    public Result(Integer code){this.code = code;}
 
-    public Result(String code,R data){
+    public Result(Integer code,R data){
         this.code = code;
         this.data = data;
     }
 
     public Result(Throwable e){this.message = e.getMessage();}
 
-    public static <R> Result<R> message(String message){
+    public static <R> Result<R> message(String message,Integer code){
         Result<R> result = new Result<>();
+        result.code = code;
         result.message = message;
         return result;
     }
 
     public static <R> Result<R> success(R data){
         Result<R> result = new Result<>();
+        result.code = SUCCESS;
         result.data = data;
         return result;
     }
 
     public static <R> Result<R> success(){
-        return message(ResultConstants.SUCCESS);
+        return message(ResultConstants.SUCCESS,SUCCESS);
     }
 
     public static <R> Result<R> success(R data,String message){
@@ -75,7 +78,7 @@ public class Result <R> implements Serializable {
     }
 
     public static <R> Result<R> failure(String message){
-        return message(message);
+        return message(message,FAILURE);
     }
 
     public Result<R> addOtherData(String key, Object value) {

@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return Result.failure(exception.getAllErrors().get(0).getDefaultMessage());
     }
 
+    /**
+     * 捕捉自定义业务异常
+     * @param exception
+     * @return
+     */
     @ExceptionHandler(BusinessException.class)
     public Result businessExceptionHandler(BusinessException exception){
         return Result.failure(exception.getMessage());

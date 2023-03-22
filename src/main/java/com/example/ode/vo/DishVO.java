@@ -26,5 +26,5 @@ public class DishVO {
     /**
      * 菜品原料
      */
-    private String ingredient;
+    private String intro;
 }

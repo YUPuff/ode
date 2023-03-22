@@ -43,7 +43,7 @@ public class DishEntity extends BaseEntity implements Serializable {
 	 * 菜品食材
 	 */
 	@ApiModelProperty(value = "菜品食材")
-	private String ingredient;
+	private String intro;
 
 	/**
 	 * 辣度（0：不辣，1：微辣，：2：中辣，3：特辣）

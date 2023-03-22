@@ -24,6 +24,7 @@ import com.example.ode.service.OrderService;
  */
 @RestController
 @RequestMapping("order")
+@CrossOrigin
 public class OrderController {
     @Autowired
     private OrderService orderService;
