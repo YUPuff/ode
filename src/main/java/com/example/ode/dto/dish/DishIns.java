@@ -36,7 +36,6 @@ public class DishIns {
     /**
      * 辣度（0：不辣，1：微辣，：2：中辣，3：特辣）
      */
-    @NotNull(message = "辣度不能为空")
     @Max(value = 3,message = "辣度只能是0~3")
     @Min(value = 0,message = "辣度只能是0~3")
     private Integer spicy;
@@ -44,7 +43,6 @@ public class DishIns {
     /**
      * 口味（0：淡，1：中等，2：重口）
      */
-    @NotNull(message = "口味不能为空")
     @Max(value = 2,message = "口味只能是0~2")
     @Min(value = 0,message = "口味只能是0~2")
     private Integer salt;
@@ -52,7 +50,6 @@ public class DishIns {
     /**
      * 份量（0：小，1：中等，2：大）
      */
-    @NotNull(message = "份量不能为空")
     @Max(value = 2,message = "份量只能是0~2")
     @Min(value = 0,message = "份量只能是0~2")
     private Integer size;

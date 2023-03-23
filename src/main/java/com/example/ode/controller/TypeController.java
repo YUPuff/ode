@@ -48,7 +48,7 @@ public class TypeController {
     }
 
     @RequestMapping("/get")
-    public Result get(@Validated @RequestBody TypeSearch search){
+    public Result get(@Validated TypeSearch search){
         return Result.success(typeService.getTypes(search));
     }
 }

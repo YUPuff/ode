@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @RequestMapping("/get")
-    public Result getUser(@Validated @RequestBody UserSearch search){
+    public Result getUser(@Validated UserSearch search){
         return Result.success(userService.getUser(search));
     }
 

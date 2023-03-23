@@ -46,8 +46,7 @@ public class DishController {
 
     @RequestMapping("/del")
     public Result delete(@RequestBody List<Long> ids){
-
-        dishService.removeByIds(ids);
+        dishService.delete(ids);
         return Result.success();
     }
 
@@ -57,15 +56,15 @@ public class DishController {
     }
 
     @RequestMapping("/get")
-    public Result getDishes(@Validated @RequestBody DishSearch search){
+    public Result getDishes(@Validated DishSearch search){
         return Result.success(dishService.getDishes(search));
     }
 
 
     @RequestMapping("/upload")
-    public String uploadFile(MultipartFile photo, HttpServletRequest request) throws IOException {
+    public Result uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
         //获取上传的文件的文件名
-        String fileName = photo.getOriginalFilename();
+        String fileName = file.getOriginalFilename();
         //处理文件重名问题
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
         String suffix = fileName.substring(fileName.lastIndexOf("."));
@@ -74,14 +73,15 @@ public class DishController {
 //        ServletContext servletContext = session.getServletContext();
 //        String photoPath = servletContext.getRealPath("photo");
         String path = request.getServletContext().getRealPath("/photo/");
-        File file = new File(path);
+        File newFile = new File(path);
         // 判断路径下目录是否存在，不存在则创建
-        if(!file.exists()){
-            file.mkdir();
+        if(!newFile.exists()){
+            newFile.mkdir();
         }
         String finalPath = path + fileName;
         //实现上传功能
-        photo.transferTo(new File(finalPath));
-        return finalPath;
+        file.transferTo(new File(finalPath));
+        System.out.println("success");
+        return Result.success(finalPath);
     }
 }

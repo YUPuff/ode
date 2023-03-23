@@ -36,7 +36,7 @@ public class CommentController {
     }
 
     @RequestMapping("/get")
-    public Result getComments(@Validated @RequestBody CommentSearch search){
+    public Result getComments(@Validated CommentSearch search){
         return Result.success(commentService.getComments(search));
     }
 
