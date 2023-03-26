@@ -24,11 +24,13 @@ public class DishSearch {
     /**
      * 最低价格
      */
+    @Min(value = 0,message = "最低价格不能低于0")
     private BigDecimal minPrice;
 
     /**
      * 最高价格
      */
+    @Min(value = 0,message = "最高价格不能低于0")
     private BigDecimal maxPrice;
 
 

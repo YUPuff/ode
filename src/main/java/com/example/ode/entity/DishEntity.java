@@ -45,23 +45,6 @@ public class DishEntity extends BaseEntity implements Serializable {
 	@ApiModelProperty(value = "菜品食材")
 	private String intro;
 
-	/**
-	 * 辣度（0：不辣，1：微辣，：2：中辣，3：特辣）
-	 */
-	@ApiModelProperty(value = "辣度（0：不辣，1：微辣，：2：中辣，3：特辣）")
-	private Integer spicy;
-
-	/**
-	 * 口味（0：淡，1：中等，2：重口）
-	 */
-	@ApiModelProperty(value = "口味（0：淡，1：中等，2：重口）")
-	private Integer salt;
-
-	/**
-	 * 份量（0：小，1：中等，2：大）
-	 */
-	@ApiModelProperty(value = "份量（0：小，1：中等，2：大）")
-	private Integer size;
 
 	/**
 	 * 菜品具体介绍

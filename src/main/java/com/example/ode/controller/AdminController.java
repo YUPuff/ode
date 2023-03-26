@@ -45,6 +45,11 @@ public class AdminController {
         return Result.success(adminService.login(ins));
     }
 
+    @GetMapping("/info")
+    public Result getInfo(@RequestParam String token){
+        return Result.success(adminService.getAdminByToken(token));
+    }
+
 
     @PostMapping("/upd")
     public Result update(@Validated @RequestBody AdminUpd upd){

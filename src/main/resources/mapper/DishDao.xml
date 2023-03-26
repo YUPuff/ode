@@ -9,9 +9,6 @@
         <result property="name" column="name"/>
         <result property="price" column="price"/>
         <result property="intro" column="intro"/>
-        <result property="spicy" column="spicy"/>
-        <result property="salt" column="salt"/>
-        <result property="size" column="size"/>
         <result property="detail" column="detail"/>
         <result property="type" column="type"/>
         <result property="pic" column="pic"/>

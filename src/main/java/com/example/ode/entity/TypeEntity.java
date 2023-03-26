@@ -28,6 +28,7 @@ public class TypeEntity extends BaseEntity implements Serializable {
 	@TableId(type = IdType.AUTO)
 	@ApiModelProperty(value = "id")
 	private Integer id;
+
 	/**
 	 * 分类代号
 	 */

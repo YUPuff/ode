@@ -1,6 +1,7 @@
 package com.example.ode.vo;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import lombok.Data;
 
 /**
  * @ProjectName: project1
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
  * @Date: 2023-01-29 20:57
  **/
 
+@Data
 public class AdminVO extends UserVO{
 
     /**

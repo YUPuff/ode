@@ -26,5 +26,8 @@ public interface AdminService extends IService<AdminEntity> {
 
     AdminVO getOneAdmin(Integer id);
 
+    AdminVO getAdminByToken(String token);
+
+
 }
 

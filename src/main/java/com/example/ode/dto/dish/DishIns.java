@@ -34,27 +34,6 @@ public class DishIns {
     private BigDecimal price;
 
     /**
-     * 辣度（0：不辣，1：微辣，：2：中辣，3：特辣）
-     */
-    @Max(value = 3,message = "辣度只能是0~3")
-    @Min(value = 0,message = "辣度只能是0~3")
-    private Integer spicy;
-
-    /**
-     * 口味（0：淡，1：中等，2：重口）
-     */
-    @Max(value = 2,message = "口味只能是0~2")
-    @Min(value = 0,message = "口味只能是0~2")
-    private Integer salt;
-
-    /**
-     * 份量（0：小，1：中等，2：大）
-     */
-    @Max(value = 2,message = "份量只能是0~2")
-    @Min(value = 0,message = "份量只能是0~2")
-    private Integer size;
-
-    /**
      * 简介
      */
     private String intro;

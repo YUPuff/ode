@@ -1,10 +1,12 @@
 package com.example.ode.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
+import com.example.ode.constant.RedisConstants;
 import com.example.ode.constant.ResultConstants;
 import com.example.ode.dao.AdminDao;
 import com.example.ode.dto.admin.AdminIns;
@@ -19,6 +21,7 @@ import com.example.ode.vo.AdminVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -37,6 +40,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 员工注册
@@ -125,6 +131,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         AdminVO adminVO = new AdminVO();
         BeanUtils.copyProperties(entity,adminVO);
         return adminVO;
+    }
+
+    @Override
+    public AdminVO getAdminByToken(String token) {
+        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
+        return JSON.parseObject(json,AdminVO.class);
     }
 
 
