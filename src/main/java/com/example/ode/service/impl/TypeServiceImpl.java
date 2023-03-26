@@ -11,7 +11,6 @@ import com.example.ode.dto.type.TypeSearch;
 import com.example.ode.dto.type.TypeUpd;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.service.DishService;
-import com.example.ode.util.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +21,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.ode.dao.TypeDao;
 import com.example.ode.entity.TypeEntity;
 import com.example.ode.service.TypeService;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service("typeService")
@@ -43,7 +39,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
      */
     @Override
     public void add(TypeIns ins) {
-        verifyBoth(ins);
+        verify(ins);
         TypeEntity entity = new TypeEntity();
         BeanUtils.copyProperties(ins,entity);
         typeDao.insert(entity);
@@ -61,23 +57,12 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
         TypeEntity oldEntity = typeDao.selectById(upd.getId());
         if (oldEntity == null) throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
         // 分情况处理
-        if(upd.getNumber().equals(oldEntity.getNumber()) && upd.getName().equals(oldEntity.getName())){
+        if(upd.getName().equals(oldEntity.getName())){
             // 未进行任何修改
             return;
-        }else if (upd.getNumber().equals(oldEntity.getNumber())){
-            // 只修改分类名，只需要验证新分类名具有唯一性
-            TypeEntity entity = typeDao.selectOne(new LambdaQueryWrapper<TypeEntity>().eq(TypeEntity::getName,upd.getName()));
-            if (entity != null) throw new BusinessException(ResultConstants.TYPE_EXIST_EXCEPTION);
-
-        }else if (upd.getName().equals(oldEntity.getName())){
-            // 只修改分类代号，需要验证新分类代号具有唯一性，同时将菜品表中的分类代号修改为新代号
-            TypeEntity entity = typeDao.selectOne(new LambdaQueryWrapper<TypeEntity>().eq(TypeEntity::getNumber,upd.getNumber()));
-            if (entity != null) throw new BusinessException(ResultConstants.TYPE_EXIST_EXCEPTION);
-            dishService.updateForTypeChange(oldEntity.getNumber(),upd.getNumber());
         }else{
-            // 同时修改两者，都需要验证唯一性，同时将菜品表中的分类代号修改为新代号
-            verifyBoth(upd);
-            dishService.updateForTypeChange(oldEntity.getNumber(),upd.getNumber());
+            // 验证分类名唯一性
+            verify(upd);
         }
         // 最后修改type表中的内容
         BeanUtils.copyProperties(upd,oldEntity);
@@ -92,10 +77,12 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
     public void delete(Integer id) {
         // 排除原分类不存在
         TypeEntity entity = typeDao.selectById(id);
-        if (entity == null) throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
+        if (entity == null)
+            throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
         // 验证该分类下没有菜品
-        DishEntity one = dishService.getOne(new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType, entity.getNumber()));
-        if (one != null) throw new BusinessException(ResultConstants.TYPE_HAS_EXCEPTION);
+        DishEntity one = dishService.getOne(new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType, id));
+        if (one != null)
+            throw new BusinessException(ResultConstants.TYPE_HAS_EXCEPTION);
         typeDao.deleteById(id);
     }
 
@@ -109,8 +96,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
     public MyPage<TypeEntity> getTypes(TypeSearch search) {
         IPage<TypeEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
         IPage<TypeEntity> typePage = typeDao.selectPage(page,new LambdaQueryWrapper<TypeEntity>()
-                .like(StringUtils.isNotBlank(search.getName()),TypeEntity::getName,search.getName())
-                .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getNumber())),TypeEntity::getNumber,search.getNumber()));
+                .like(StringUtils.isNotBlank(search.getName()),TypeEntity::getName,search.getName()));
         MyPage<TypeEntity> myPage = MyPage.createPage(typePage);
         return myPage;
     }
@@ -119,11 +105,9 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
      * 验证分类代号和分类名是否同时具有唯一性
      * @param ins
      */
-    private void verifyBoth(TypeIns ins){
+    private void verify(TypeIns ins){
         TypeEntity typeEntity = typeDao.selectOne(new LambdaQueryWrapper<TypeEntity>()
-                                                        .eq(TypeEntity::getName, ins.getName())
-                                                        .or()
-                                                        .eq(TypeEntity::getNumber, ins.getNumber()));
+                                                        .eq(TypeEntity::getName, ins.getName()));
         if (typeEntity != null) throw new BusinessException(ResultConstants.TYPE_EXIST_EXCEPTION);
     }
 }

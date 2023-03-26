@@ -8,10 +8,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class TypeSearch {
 
-    /**
-     * 分类代号
-     */
-    private Integer number;
 
     /**
      * 分类名

@@ -22,7 +22,7 @@ public class DishIns {
      * 菜品名
      */
     @NotBlank(message = "菜品名不能为空")
-    @Length(message = "菜品名不能超过{max}个字符",max = 10)
+    @Length(message = "菜品名不能超过{max}个字符",max = 20)
     private String name;
 
     /**
@@ -36,11 +36,13 @@ public class DishIns {
     /**
      * 简介
      */
+    @Length(message = "菜品简介不能超过{max}个字符",max = 20)
     private String intro;
 
     /**
      * 菜品具体介绍
      */
+    @Length(message = "具体介绍不能超过{max}个字符",max = 200)
     private String detail;
 
     /**

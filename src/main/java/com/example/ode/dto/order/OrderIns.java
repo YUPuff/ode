@@ -2,6 +2,7 @@ package com.example.ode.dto.order;
 
 import com.example.ode.dto.dish.DishDTO;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
@@ -39,6 +40,7 @@ public class OrderIns {
     /**
      * 订单备注
      */
+    @Length(message = "备注不能超过{max}个字符",max = 200)
     private String remark;
 
 

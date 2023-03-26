@@ -30,11 +30,6 @@ public class TypeEntity extends BaseEntity implements Serializable {
 	private Integer id;
 
 	/**
-	 * 分类代号
-	 */
-	@ApiModelProperty(value = "分类代号")
-	private Integer number;
-	/**
 	 * 分类名
 	 */
 	@ApiModelProperty(value = "分类名")

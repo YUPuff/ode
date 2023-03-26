@@ -57,8 +57,8 @@ public class AdminController {
         return Result.success();
     }
 
-    @GetMapping("/del")
-    public Result delete(List<Integer> ids){
+    @PostMapping("/del")
+    public Result delete(@RequestBody List<Integer> ids){
         adminService.removeBatchByIds(ids);
         return Result.success();
     }

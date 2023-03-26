@@ -88,18 +88,6 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
     }
 
 
-    /**
-     * 由于分类改变，需要批量修改分类代号
-     * @param oldType
-     * @param newType
-     */
-    @Override
-    public void updateForTypeChange(Integer oldType, Integer newType) {
-        DishEntity entity = new DishEntity();
-        entity.setType(newType);
-        dishDao.update(entity,new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType,oldType));
-    }
-
     @Override
     public DishVO getOneDish(Long dishId) {
         return null;
@@ -126,7 +114,7 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
      */
     private void verifyTypeExist(Integer typeId){
         TypeEntity one = typeService.getOne(new LambdaQueryWrapper<TypeEntity>()
-                .eq(TypeEntity::getNumber, typeId));
+                .eq(TypeEntity::getId, typeId));
         if (one == null)
             throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
     }

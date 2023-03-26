@@ -1,6 +1,8 @@
 package com.example.ode.dto.admin;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
@@ -11,7 +13,7 @@ import javax.validation.constraints.*;
  **/
 
 @Data
-public class AdminUpd extends AdminIns{
+public class AdminUpd{
 
     /**
      * id
@@ -19,12 +21,23 @@ public class AdminUpd extends AdminIns{
     @NotNull(message = "id不能为空")
     private Long id;
 
+    /**
+     * 用户名
+     */
+    @NotBlank(message = "用户名不能为空")
+    @Length(message = "用户名不能超过{max}个字符",max = 30)
+    private String name;
+
+    /**
+     * 密码
+     */
+    @Length(message = "密码不能超过{max}个字符",max = 30)
+    private String password;
 
 
     /**
      * 角色（0：管理员，1：服务员，2：后厨）
      */
-    @NotNull(message = "角色类型不能为空")
     @Max(value = 2,message = "角色类型只能是0、1、2")
     @Min(value = 0,message = "角色类型只能是0、1、2")
     private Integer role;

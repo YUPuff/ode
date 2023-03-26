@@ -1,6 +1,5 @@
 package com.example.ode.dto.admin;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,6 @@ public class AdminIns {
     /**
      * 用户名
      */
-    @ApiModelProperty(value = "用户名")
     @NotBlank(message = "用户名不能为空")
     @Length(message = "用户名不能超过{max}个字符",max = 30)
     private String username;
@@ -31,7 +29,6 @@ public class AdminIns {
     /**
      * 密码
      */
-    @ApiModelProperty(value = "密码")
     @NotBlank(message = "密码不能为空")
     @Length(message = "密码不能超过{max}个字符",max = 30)
     private String password;

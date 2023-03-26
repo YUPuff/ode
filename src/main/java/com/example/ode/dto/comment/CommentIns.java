@@ -1,6 +1,7 @@
 package com.example.ode.dto.comment;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -31,6 +32,7 @@ public class CommentIns {
     /**
      * 内容
      */
+    @Length(message = "内容不能超过{max}个字符",max = 50)
     private String content;
 
 

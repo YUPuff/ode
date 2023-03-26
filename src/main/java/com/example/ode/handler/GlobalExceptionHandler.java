@@ -4,8 +4,13 @@ package com.example.ode.handler;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.Result;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 /**
  * 全局异常处理
@@ -18,9 +23,10 @@ public class GlobalExceptionHandler {
      * @param exception
      * @return
      */
-    @ExceptionHandler(BindException.class)
-    public Result validExceptionHandler(BindException exception) {
-        return Result.failure(exception.getAllErrors().get(0).getDefaultMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result validExceptionHandler(MethodArgumentNotValidException exception) {
+        BindingResult bindingResult = exception.getBindingResult();
+        return Result.failure(bindingResult.getFieldError().getDefaultMessage());
     }
 
     /**
