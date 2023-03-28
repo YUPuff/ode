@@ -160,6 +160,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(order,orderVO);
         orderVO.setDishes(myPage);
+        // 查询订单对应用户名
+        orderVO.setName(userService.getById(order.getUserId()).getName());
         return orderVO;
     }
 
@@ -173,11 +175,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     public MyPage<OrderEntity> getOrders(OrderSearch search) {
         IPage<OrderEntity> page = new Page<>(search.getPageNum(),search.getPageSize());
         IPage<OrderEntity> orderPage = orderDao.selectPage(page,new LambdaQueryWrapper<OrderEntity>()
-                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getUserId())),OrderEntity::getUserId,search.getUserId())
-                .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getTableId())),OrderEntity::getTableId,search.getTableId())
+                .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getId())),OrderEntity::getId,search.getId())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getTableId())),OrderEntity::getTableId,search.getTableId())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getStatus())),OrderEntity::getStatus,search.getStatus())
-                .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxTotal())),OrderEntity::getTotal,search.getMaxTotal())
                 .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getTotal,search.getMinTotal())
+                .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxTotal())),OrderEntity::getTotal,search.getMaxTotal())
+                .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getStart())),OrderEntity::getAddTime,search.getStart())
+                .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getEnd())),OrderEntity::getAddTime,search.getEnd())
                 .orderByDesc(OrderEntity::getAddTime));
         MyPage<OrderEntity> myPage = MyPage.createPage(orderPage);
         return myPage;

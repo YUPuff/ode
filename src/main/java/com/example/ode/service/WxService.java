@@ -16,14 +16,11 @@ import java.security.spec.AlgorithmParameterSpec;
 @Component
 public class WxService {
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
     /**
      * 对前端发送的数据先进行解密，得到用户详细信息
      * @param encryptedData
      * @param iv
-     * @param key
+     * @param s
      * @return
      * @throws Exception
      */

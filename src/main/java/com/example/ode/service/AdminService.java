@@ -8,8 +8,6 @@ import com.example.ode.dto.admin.AdminUpd;
 import com.example.ode.entity.AdminEntity;
 import com.example.ode.vo.AdminVO;
 
-import java.util.List;
-
 /**
  * @author yilin
  * @date 2023-01-28 14:23:41
@@ -24,7 +22,7 @@ public interface AdminService extends IService<AdminEntity> {
 
     MyPage<AdminVO> getAdmins(AdminSearch search);
 
-    AdminVO getOneAdmin(Integer id);
+    AdminVO getOneAdmin(Long id);
 
     AdminVO getAdminByToken(String token);
 

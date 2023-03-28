@@ -1,12 +1,10 @@
 package com.example.ode.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
-import com.example.ode.constant.RedisConstants;
 import com.example.ode.constant.ResultConstants;
 import com.example.ode.dao.AdminDao;
 import com.example.ode.dto.admin.AdminIns;
@@ -27,9 +25,6 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.ode.service.AdminService;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service("adminService")
@@ -124,7 +119,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      * @return
      */
     @Override
-    public AdminVO getOneAdmin(Integer id) {
+    public AdminVO getOneAdmin(Long id) {
         AdminEntity entity = adminDao.selectById(id);
         if (entity == null)
             throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
@@ -135,8 +130,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
 
     @Override
     public AdminVO getAdminByToken(String token) {
-        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
-        return JSON.parseObject(json,AdminVO.class);
+        return getOneAdmin(2L);
+//        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
+//        return JSON.parseObject(json,AdminVO.class);
     }
 
 

@@ -110,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Override
     public void loginForToken(UserVO userVO) {
         String token = JWTUtils.sign(userVO.getId());
-        redisTemplate.opsForValue().set(RedisConstants.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
+//        redisTemplate.opsForValue().set(RedisConstants.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
         userVO.setToken(token);
     }
 

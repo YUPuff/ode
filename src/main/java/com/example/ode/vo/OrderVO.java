@@ -16,4 +16,9 @@ public class OrderVO extends OrderEntity {
      * 订单包含的菜品
      */
     private MyPage<OrderDishVO> dishes;
+
+    /**
+     * 下单用户名
+     */
+    private String name;
 }

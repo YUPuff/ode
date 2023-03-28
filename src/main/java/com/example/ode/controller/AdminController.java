@@ -64,7 +64,7 @@ public class AdminController {
     }
 
     @GetMapping("/detail/{id}")
-    public Result detail(@PathVariable("id") Integer id){
+    public Result detail(@PathVariable("id") Long id){
         return Result.success(adminService.getOneAdmin(id));
     }
 
@@ -75,7 +75,7 @@ public class AdminController {
 
     @RequestMapping("/logout")
     public Result logout(){
-        return null;
+        return Result.success();
     }
 
     @RequestMapping("/upload")

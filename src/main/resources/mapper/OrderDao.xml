@@ -25,4 +25,13 @@
         limit #{pageNum,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
     </select>
 
+
+    <select id="selectMyPage" resultType="com.example.ode.vo.OrderVO">
+        SELECT o.id id,o.table_id tableId,u.name name,o.status status,o.total total,o.add_time addTime
+        FROM t_order o
+            INNER JOIN t_user u ON o.user_id = u.id
+        ${ew.customSqlSegment}
+    </select>
+
+
 </mapper>
