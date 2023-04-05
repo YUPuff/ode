@@ -13,7 +13,16 @@ import java.math.BigDecimal;
 
 @Data
 public class OrderDishVO {
-    private Integer id;
+
+    /**
+     * 点菜id
+     */
+    private Long id;
+
+    /**
+     * 菜品id
+     */
+    private Long dishId;
     /**
      * 菜品名
      */
@@ -22,7 +31,6 @@ public class OrderDishVO {
      * 价格
      */
     private BigDecimal price;
-
 
     /**
      * 图片路径

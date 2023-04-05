@@ -1,8 +1,11 @@
 package com.example.ode.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.ode.entity.CommentEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.ode.vo.CommentVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author yilin
@@ -10,5 +13,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CommentDao extends BaseMapper<CommentEntity> {
-	
+//    IPage<CommentVO> selectMyPage(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
 }

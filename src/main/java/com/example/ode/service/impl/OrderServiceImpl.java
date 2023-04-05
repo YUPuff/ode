@@ -153,10 +153,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             throw new BusinessException(ResultConstants.ORDER_NO_EXIST_EXCEPTION);
         // 查询订单对应菜品的详细信息
         List<OrderDishVO> dishes = orderDao.selectDishForOrder(id,(pageNum-1)*10,pageSize);
+        long count = orderDishService.count(new LambdaQueryWrapper<OrderDishEntity>().eq(OrderDishEntity::getOrderId, id));
         MyPage<OrderDishVO> myPage = new MyPage<>();
         myPage.setPageNum(pageNum);
         myPage.setPageSize(pageSize);
         myPage.setList(dishes);
+        myPage.setTotalNum(count);
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(order,orderVO);
         orderVO.setDishes(myPage);

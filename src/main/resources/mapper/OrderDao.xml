@@ -17,7 +17,7 @@
     </resultMap>
 
     <select id="selectDishForOrder" resultType="com.example.ode.vo.OrderDishVO">
-        SELECT d.id id,d.name name,d.price price,d.pic pic,od.amount amount,od.status status
+        SELECT od.id id,d.id dishId,d.name name,d.price price,d.pic pic,od.amount amount,od.status status
         FROM t_dish d
                  INNER JOIN t_order_dish od ON d.id = od.dish_id
                  INNER JOIN t_order o ON od.order_id = o.id
@@ -26,12 +26,12 @@
     </select>
 
 
-    <select id="selectMyPage" resultType="com.example.ode.vo.OrderVO">
-        SELECT o.id id,o.table_id tableId,u.name name,o.status status,o.total total,o.add_time addTime
-        FROM t_order o
-            INNER JOIN t_user u ON o.user_id = u.id
-        ${ew.customSqlSegment}
-    </select>
+<!--    <select id="selectMyPage" resultType="com.example.ode.vo.OrderVO">-->
+<!--        SELECT o.id id,o.table_id tableId,u.name name,o.status status,o.total total,o.add_time addTime-->
+<!--        FROM t_order o-->
+<!--            INNER JOIN t_user u ON o.user_id = u.id-->
+<!--        ${ew.customSqlSegment}-->
+<!--    </select>-->
 
 
 </mapper>

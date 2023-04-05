@@ -87,6 +87,12 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
             throw new BusinessException(ResultConstants.ORDER_DISH_CANT_EXCEPTION);
         entity.setStatus(DishStatus.CANCELED.getCode());
         orderDishDao.updateById(entity);
+        // 如果当前订单只有此菜品，则订单状态变为“已取消”
+        Long orderId = entity.getOrderId();
+        List<OrderDishEntity> entities = orderDishDao.selectList(new LambdaQueryWrapper<OrderDishEntity>().eq(OrderDishEntity::getOrderId, orderId));
+        if (entities.size() == 1){
+            orderService.cancelOrder(orderId);
+        }
         // 从总订单中删除当前菜品金额
         Long dishId = entity.getDishId();
         DishEntity dish = dishService.getById(dishId);

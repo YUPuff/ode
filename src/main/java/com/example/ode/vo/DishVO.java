@@ -3,11 +3,12 @@ package com.example.ode.vo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Data
 public class DishVO {
 
-    private Integer id;
+    private Long id;
     /**
      * 菜品名
      */
@@ -27,4 +28,9 @@ public class DishVO {
      * 菜品原料
      */
     private String intro;
+
+    /**
+     * 菜品评论数
+     */
+    private Map<String,Long> comments;
 }

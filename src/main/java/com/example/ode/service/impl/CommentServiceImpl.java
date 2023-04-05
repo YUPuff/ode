@@ -19,6 +19,7 @@ import com.example.ode.service.OrderService;
 
 import com.example.ode.service.UserService;
 import com.example.ode.util.ObjectUtils;
+import com.example.ode.vo.CommentVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,9 @@ import com.example.ode.entity.CommentEntity;
 import com.example.ode.service.CommentService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service("commentService")
@@ -103,6 +106,84 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
         }
         // 用户完成评价后，需要修改订单状态
         orderService.updateStatus(ins.getOrderId());
+    }
+
+    /**
+     * 得到某菜品好、中、差评价数
+     * @param dishId
+     * @return
+     */
+    @Override
+    public Map<String, Long> getCommentCount(Long dishId) {
+        DishEntity dish = dishService.getById(dishId);
+        if (dish == null)
+            throw new BusinessException(ResultConstants.DISH_NO_EXIST_EXCEPTION);
+        Long good = commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>().eq(CommentEntity::getType, CommentType.DISH.getCode())
+                .eq(CommentEntity::getTarget, dishId)
+                .eq(CommentEntity::getLevel,CommentLevel.GOOD.getCode()));
+        Long mid = commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>().eq(CommentEntity::getType, CommentType.DISH.getCode())
+                .eq(CommentEntity::getTarget, dishId)
+                .eq(CommentEntity::getLevel,CommentLevel.MEDIUM.getCode()));
+        Long bad = commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>().eq(CommentEntity::getType, CommentType.DISH.getCode())
+                .eq(CommentEntity::getTarget, dishId)
+                .eq(CommentEntity::getLevel,CommentLevel.BAD.getCode()));
+        Map<String,Long> map = new HashMap<>();
+        map.put("good",good);
+        map.put("mid",mid);
+        map.put("bad",bad);
+        return map;
+    }
+
+    /**
+     * 得到服务、环境的好中差评数
+     * @return
+     */
+    @Override
+    public Map<String, Map<String, Long>> getSEComment() {
+        Map<String,Long> service = new HashMap<>();
+        Map<String,Long> environment = new HashMap<>();
+        Integer ts = CommentType.SERVICE.getCode();
+        Integer te = CommentType.ENVIRONMENT.getCode();
+        Integer good = CommentLevel.GOOD.getCode();
+        Integer mid = CommentLevel.MEDIUM.getCode();
+        Integer bad = CommentLevel.BAD.getCode();
+        service.put("good",commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>()
+                .eq(CommentEntity::getType,ts)
+                .eq(CommentEntity::getLevel,good)));
+        service.put("mid",commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>()
+                .eq(CommentEntity::getType,ts)
+                .eq(CommentEntity::getLevel,mid)));
+        service.put("bad",commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>()
+                .eq(CommentEntity::getType,ts)
+                .eq(CommentEntity::getLevel,bad)));
+        environment.put("good",commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>()
+                .eq(CommentEntity::getType,te)
+                .eq(CommentEntity::getLevel,good)));
+        environment.put("mid",commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>()
+                .eq(CommentEntity::getType,te)
+                .eq(CommentEntity::getLevel,mid)));
+        environment.put("bad",commentDao.selectCount(new LambdaQueryWrapper<CommentEntity>()
+                .eq(CommentEntity::getType,te)
+                .eq(CommentEntity::getLevel,bad)));
+        Map<String,Map<String,Long>> map = new HashMap<>();
+        map.put("service",service);
+        map.put("environment",environment);
+        return map;
+    }
+
+    /**
+     * 分页查看具体评论内容
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public MyPage<CommentEntity> getCommentDetail(Integer pageNum, Integer pageSize) {
+        IPage<CommentEntity> page = new Page<>(pageNum,pageSize);
+        IPage<CommentEntity> commentPage = commentDao.selectPage(page,new LambdaQueryWrapper<CommentEntity>()
+                .groupBy(CommentEntity::getOrderId));
+        MyPage<CommentEntity> myPage = MyPage.createPage(commentPage);
+        return myPage;
     }
 
 

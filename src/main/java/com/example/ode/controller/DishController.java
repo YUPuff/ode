@@ -52,7 +52,7 @@ public class DishController {
 
     @GetMapping("/detail/{id}")
     public Result detail(@PathVariable("id") Long id){
-        return Result.success(dishService.getById(id));
+        return Result.success(dishService.getOneDish(id));
     }
 
     @RequestMapping("/get")

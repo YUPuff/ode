@@ -11,6 +11,7 @@ import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
 import com.example.ode.entity.RecommendEntity;
 import com.example.ode.entity.TypeEntity;
+import com.example.ode.service.CommentService;
 import com.example.ode.service.RecommendService;
 import com.example.ode.service.TypeService;
 import com.example.ode.util.ObjectUtils;
@@ -41,6 +42,9 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
 
     @Autowired
     private RecommendService recommendService;
+
+    @Autowired
+    private CommentService commentService;
 
     /**
      * 增加单个菜品
@@ -83,6 +87,11 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
                 .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinPrice())),DishEntity::getPrice,search.getMinPrice())
                 .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxPrice())),DishEntity::getPrice,search.getMaxPrice())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getType())),DishEntity::getType,search.getType()));
+        List<DishVO> records = dishPage.getRecords();
+        for (DishVO record : records) {
+            record.setComments(commentService.getCommentCount(record.getId()));
+        }
+        dishPage.setRecords(records);
         MyPage<DishVO> myPage = MyPage.createPage(dishPage);
         return myPage;
     }
@@ -90,7 +99,11 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
 
     @Override
     public DishVO getOneDish(Long dishId) {
-        return null;
+        DishVO dishVO = new DishVO();
+        DishEntity dish = dishDao.selectById(dishId);
+        BeanUtils.copyProperties(dish,dishVO);
+        dishVO.setComments(commentService.getCommentCount(dishId));
+        return dishVO;
     }
 
     @Override

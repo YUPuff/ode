@@ -40,4 +40,15 @@ public class CommentController {
         return Result.success(commentService.getComments(search));
     }
 
+    @GetMapping("/dish/{id}")
+    public Result getDishComment(@PathVariable("id")Long id){
+        return Result.success(commentService.getCommentCount(id));
+    }
+
+    @GetMapping("entire")
+    public Result getComment(Integer pageNum,Integer pageSize){
+        return Result.success(commentService.getSEComment())
+                .addOtherData("commentDetail",commentService.getCommentDetail(pageNum,pageSize));
+    }
+
 }

@@ -11,7 +11,7 @@ public interface ResultConstants {
       String USER_NO_EXIST_EXCEPTION = "用户不存在，操作失败";
 
 
-      String DISH_NO_EXIST_EXCEPTION = "菜品不存在，操作失败！";
+      String DISH_NO_EXIST_EXCEPTION = "菜品不存在!";
 
 
       String TYPE_NO_EXIST_EXCEPTION = "分类不存在，操作失败！";

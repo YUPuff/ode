@@ -40,9 +40,9 @@ public class DishEntity extends BaseEntity implements Serializable {
 	private BigDecimal price;
 
 	/**
-	 * 菜品食材
+	 * 简介
 	 */
-	@ApiModelProperty(value = "菜品食材")
+	@ApiModelProperty(value = "简介")
 	private String intro;
 
 
