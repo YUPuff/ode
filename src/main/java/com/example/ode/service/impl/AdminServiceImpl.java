@@ -11,9 +11,14 @@ import com.example.ode.dto.admin.AdminIns;
 import com.example.ode.dto.admin.AdminSearch;
 import com.example.ode.dto.admin.AdminUpd;
 import com.example.ode.entity.AdminEntity;
+import com.example.ode.entity.OrderEntity;
 import com.example.ode.enums.IsLock;
 import com.example.ode.enums.IsVal;
+import com.example.ode.enums.OrderStatus;
+import com.example.ode.enums.Role;
+import com.example.ode.service.OrderService;
 import com.example.ode.service.UserService;
+import com.example.ode.util.LocalDateTimeUtils;
 import com.example.ode.util.ObjectUtils;
 import com.example.ode.vo.AdminVO;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +31,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.ode.service.AdminService;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
+
 
 @Service("adminService")
 public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> implements AdminService {
@@ -35,6 +44,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -48,7 +60,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getUsername()));
         if (entity == null){
             entity = new AdminEntity();
-            BeanUtils.copyProperties(ins,entity);
+            entity.setName(ins.getUsername());
+            entity.setPassword(ins.getPassword());
             adminDao.insert(entity);
             return;
         }
@@ -128,14 +141,112 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         return adminVO;
     }
 
+    /**
+     * 通过token获取已登录用户信息
+     * @param token
+     * @return
+     */
     @Override
     public AdminVO getAdminByToken(String token) {
-        return getOneAdmin(2L);
+        return getOneAdmin(1L);
 //        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
 //        return JSON.parseObject(json,AdminVO.class);
     }
 
+    /**
+     * 获取员工数、上周和本周经营数据
+     * @return
+     */
+    @Override
+    public Map<String, Object> getStatistics() {
+        Long admin = adminDao.selectCount(new LambdaQueryWrapper<>());
+        // 本周开始时间
+        Date weekStart = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.weekStartTime());
+        // 本周结束时间
+        Date weekEnd = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.weekEndTime());
+        // 上周开始时间
+        Date lastWeekStart = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.lastWeekStartTime());
+        // 上周结束时间
+        Date lastWeekEnd = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.lastWeekEndTime());
+        List<OrderEntity> weekList = orderService.list(new LambdaQueryWrapper<OrderEntity>()
+                .ge(OrderEntity::getAddTime, weekStart)
+                .le(OrderEntity::getAddTime, weekEnd)
+                .eq(OrderEntity::getStatus, OrderStatus.FINISHED.getCode()));
+        List<OrderEntity> lastWeekList = orderService.list(new LambdaQueryWrapper<OrderEntity>()
+                .ge(OrderEntity::getAddTime, lastWeekStart)
+                .le(OrderEntity::getAddTime, lastWeekEnd)
+                .eq(OrderEntity::getStatus, OrderStatus.FINISHED.getCode()));
+        // 本周订单数
+        Integer weekOrder =  weekList.size();
+        // 上周订单数
+        Integer lastWeekOrder = lastWeekList.size();
+        // 计算本周营业额
+        BigDecimal weekTotal = countTotal(weekList);
+        // 计算上周营业额
+        BigDecimal lastWeekTotal = countTotal(lastWeekList);
+        Map<String,Object> map = new HashMap<>();
+        map.put("admin",admin);
+        map.put("order",weekOrder);
+        map.put("lastOrder",lastWeekOrder);
+        map.put("total",weekTotal.doubleValue());
+        map.put("lastTotal",lastWeekTotal.doubleValue());
+        return map;
+    }
 
+    @Override
+    public Map<String,List> get12Data() {
+        Map<String,List> map = new HashMap<>();
+        List<Integer> order = new ArrayList<>();
+        List<Double> total = new ArrayList<>();
+        LocalDateTime yearStart = LocalDateTimeUtils.yearStartTime();
+        for(long i=0;i<12;i++){
+            Date start = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.nMonthStartTime(yearStart, i));
+            Date end = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.nMonthEndTime(yearStart, i));
+            List<OrderEntity> orders = orderService.list(new LambdaQueryWrapper<OrderEntity>()
+                    .ge(OrderEntity::getAddTime, start)
+                    .le(OrderEntity::getAddTime, end)
+                    .eq(OrderEntity::getStatus, OrderStatus.FINISHED.getCode()));
+            order.add(orders.size());
+            total.add(countTotal(orders).doubleValue());
+        }
+        map.put("order",order);
+        map.put("total",total);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> index(Long id) {
+        AdminEntity entity = adminDao.selectById(id);
+        if (entity == null)
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
+        Long day = LocalDateTimeUtils.getBetweenDay(entity.getAddTime());
+        Long order = orderService.count(new LambdaQueryWrapper<OrderEntity>()
+                .eq(OrderEntity::getStatus, OrderStatus.NOT_START.getCode())
+                .or()
+                .eq(OrderEntity::getStatus, OrderStatus.ING.getCode()));
+        Map<String,Object> map = new HashMap<>();
+        map.put("day",day);
+        map.put("order",order);
+        if(entity.getRole() == Role.ADMIN.getCode()){
+            Long people = adminDao.selectCount(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getIsVal, IsVal.NOT_VAL));
+            map.put("people",people);
+        }
+        return map;
+    }
+
+
+    /**
+     * 统计列表中订单总金额之和
+     * @param list
+     * @return
+     */
+    public BigDecimal countTotal(List<OrderEntity> list){
+        BigDecimal total = new BigDecimal(0);
+        for(OrderEntity item:list){
+            total = total.add(item.getTotal());
+        }
+        return total;
+    }
     /**
      * 验证账户是否合理
      * @param entity

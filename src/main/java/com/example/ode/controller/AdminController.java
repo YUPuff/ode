@@ -106,4 +106,13 @@ public class AdminController {
         return "img/"+fileName;
     }
 
+    @GetMapping("/statistics")
+    public Result getStatistics(){
+        return Result.success(adminService.getStatistics()).addOtherData("12Data",adminService.get12Data());
+    }
+
+    @GetMapping("/index/{id}")
+    public Result getDays(@PathVariable("id")Long id){
+        return Result.success(adminService.index(id));
+    }
 }

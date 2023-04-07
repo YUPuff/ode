@@ -45,10 +45,13 @@ public class CommentController {
         return Result.success(commentService.getCommentCount(id));
     }
 
-    @GetMapping("entire")
-    public Result getComment(Integer pageNum,Integer pageSize){
-        return Result.success(commentService.getSEComment())
-                .addOtherData("commentDetail",commentService.getCommentDetail(pageNum,pageSize));
+    @GetMapping("/se")
+    public Result getSEComment(){
+        return Result.success(commentService.getSEComment());
     }
 
+    @GetMapping("/detail")
+    public Result getCommentDetail(Integer pageNum,Integer pageSize){
+        return Result.success(commentService.getCommentDetail(pageNum,pageSize));
+    }
 }
