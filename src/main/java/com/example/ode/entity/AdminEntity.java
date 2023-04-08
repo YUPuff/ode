@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.example.ode.enums.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -65,6 +66,5 @@ public class AdminEntity extends BaseEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "备用")
 	private String extra;
-
 
 }

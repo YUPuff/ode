@@ -31,7 +31,7 @@ public class JWTUtils {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            verifier.verify(token);
             return true;
         } catch (Exception exception) {
             return false;
@@ -46,7 +46,7 @@ public class JWTUtils {
     public static Long getId(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("Id").asLong();
+            return jwt.getClaim("id").asLong();
         } catch (JWTDecodeException e) {
             return null;
         }

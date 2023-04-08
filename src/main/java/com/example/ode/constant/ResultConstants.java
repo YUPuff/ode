@@ -9,6 +9,7 @@ public interface ResultConstants {
       String USER_IS_VAL_EXCEPTION = "用户未生效，请联系管理员！";
       String USER_REJECT_EXCEPTION = "用户被驳回，驳回理由是：";
       String USER_NO_EXIST_EXCEPTION = "用户不存在，操作失败";
+      String USER_EXIST_EXCEPTION = "用户名已被使用，操作失败";
 
 
       String DISH_NO_EXIST_EXCEPTION = "菜品不存在!";

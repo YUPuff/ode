@@ -102,6 +102,13 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         if (upd.getIsVal() == IsVal.VAL.getCode())
             entity.setIsVal(upd.getIsVal());
         verify(entity);
+        // 确保新用户名唯一
+        if (!entity.getName().equals(upd.getName())){
+            AdminEntity newEntity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>()
+                    .eq(AdminEntity::getName,upd.getName()));
+            if(newEntity != null)
+                throw new BusinessException(ResultConstants.USER_EXIST_EXCEPTION);
+        }
         BeanUtils.copyProperties(upd,entity);
         adminDao.updateById(entity);
     }
@@ -148,7 +155,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     @Override
     public AdminVO getAdminByToken(String token) {
-        return getOneAdmin(1L);
+        return getOneAdmin(2L);
 //        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
 //        return JSON.parseObject(json,AdminVO.class);
     }
@@ -252,7 +259,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      * @param entity
      * @return
      */
-    private void verify(AdminEntity entity){
+    @Override
+    public void verify(AdminEntity entity){
         if (entity == null){
             throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
         }

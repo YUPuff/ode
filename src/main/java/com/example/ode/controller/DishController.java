@@ -6,6 +6,7 @@ import com.example.ode.common.Result;
 import com.example.ode.dto.dish.DishIns;
 import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,18 +34,21 @@ public class DishController {
     private DishService dishService;
 
     @PostMapping("/add")
+    @RequiresRoles("ADMIN")
     public Result add(@Validated @RequestBody DishIns ins){
         dishService.add(ins);
         return Result.success();
     }
 
     @PostMapping("/upd")
+    @RequiresRoles("ADMIN")
     public Result update(@Validated @RequestBody DishUpd upd){
         dishService.update(upd);
         return Result.success();
     }
 
     @RequestMapping("/del")
+    @RequiresRoles("ADMIN")
     public Result delete(@RequestBody List<Long> ids){
         dishService.delete(ids);
         return Result.success();

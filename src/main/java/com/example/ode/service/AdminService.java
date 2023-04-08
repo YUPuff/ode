@@ -35,5 +35,7 @@ public interface AdminService extends IService<AdminEntity> {
 
     Map<String,Object> index(Long id);
 
+    void verify(AdminEntity entity);
+
 }
 

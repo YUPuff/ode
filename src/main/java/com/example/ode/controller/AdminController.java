@@ -11,6 +11,8 @@ import com.example.ode.common.Result;
 import com.example.ode.dto.admin.AdminIns;
 import com.example.ode.dto.admin.AdminSearch;
 import com.example.ode.dto.admin.AdminUpd;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,12 +54,14 @@ public class AdminController {
 
 
     @PostMapping("/upd")
+    @RequiresRoles(value = {"ADMIN"})
     public Result update(@Validated @RequestBody AdminUpd upd){
         adminService.update(upd);
         return Result.success();
     }
 
     @PostMapping("/del")
+    @RequiresRoles(value = {"ADMIN"})
     public Result delete(@RequestBody List<Integer> ids){
         adminService.removeBatchByIds(ids);
         return Result.success();
@@ -69,6 +73,7 @@ public class AdminController {
     }
 
     @RequestMapping("/get")
+    @RequiresRoles("ADMIN")
     public Result getAdmins(@Validated AdminSearch search){
         return Result.success(adminService.getAdmins(search));
     }
@@ -79,6 +84,7 @@ public class AdminController {
     }
 
     @RequestMapping("/upload")
+//    @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN","COOK"})
     public String uploadFile(MultipartFile photo) throws IOException {
         System.out.println("开始上传");
         //获取上传的文件的文件名
@@ -107,11 +113,13 @@ public class AdminController {
     }
 
     @GetMapping("/statistics")
+    @RequiresRoles("ADMIN")
     public Result getStatistics(){
         return Result.success(adminService.getStatistics()).addOtherData("12Data",adminService.get12Data());
     }
 
     @GetMapping("/index/{id}")
+    @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN","COOK"})
     public Result getDays(@PathVariable("id")Long id){
         return Result.success(adminService.index(id));
     }

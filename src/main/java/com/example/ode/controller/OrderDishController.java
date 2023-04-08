@@ -5,6 +5,8 @@ import java.util.Map;
 
 
 import com.example.ode.common.Result;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,7 @@ public class OrderDishController {
     private OrderDishService orderDishService;
 
     @RequestMapping("/upd/{id}")
+    @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN","COOK"})
     public Result updateStatus(@PathVariable("id") Long id){
         orderDishService.updateStatus(id);
         return Result.success();

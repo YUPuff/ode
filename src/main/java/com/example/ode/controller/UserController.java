@@ -23,8 +23,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-
     @RequestMapping("/login")
     public Result login(@RequestBody WXAuth wxAuth){
         return Result.success(userService.login(wxAuth));

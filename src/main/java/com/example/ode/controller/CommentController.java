@@ -4,6 +4,7 @@ package com.example.ode.controller;
 import com.example.ode.common.Result;
 import com.example.ode.dto.comment.CommentIns;
 import com.example.ode.dto.comment.CommentSearch;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class CommentController {
     }
 
     @RequestMapping("/del/{id}")
+    @RequiresRoles("ADMIN")
     public Result delete(@PathVariable("id") Long id){
         commentService.removeById(id);
         return Result.success();
@@ -46,11 +48,13 @@ public class CommentController {
     }
 
     @GetMapping("/se")
+    @RequiresRoles("ADMIN")
     public Result getSEComment(){
         return Result.success(commentService.getSEComment());
     }
 
     @GetMapping("/detail")
+    @RequiresRoles("ADMIN")
     public Result getCommentDetail(Integer pageNum,Integer pageSize){
         return Result.success(commentService.getCommentDetail(pageNum,pageSize));
     }
