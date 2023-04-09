@@ -12,6 +12,7 @@ import com.example.ode.service.DishService;
 import com.example.ode.service.OrderService;
 import com.example.ode.service.RecommendService;
 import com.example.ode.vo.DishVO;
+import com.example.ode.vo.OrderDishVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,7 @@ import com.example.ode.service.OrderDishService;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Service("orderDishService")
@@ -51,7 +50,8 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
     @Override
     public void updateStatus(Long id) {
         OrderDishEntity entity = orderDishDao.selectById(id);
-        if (entity == null) throw new BusinessException(ResultConstants.ORDER_DISH_NO_EXIST_EXCEPTION);
+        if (entity == null)
+            throw new BusinessException(ResultConstants.ORDER_DISH_NO_EXIST_EXCEPTION);
         int status = entity.getStatus();
         if (status == DishStatus.FINISHED.getCode() || status == DishStatus.CANCELED.getCode())
             throw new BusinessException(ResultConstants.ORDER_DISH_CANT_EXCEPTION);
@@ -136,5 +136,21 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
         cld.set(Calendar.DAY_OF_MONTH,1);
         String start = sdf.format(cld.getTime());
         return orderDishDao.getTop5Dishes(start,end);
+    }
+
+    /**
+     * 获取未烹饪/烹饪中/待上菜的菜品信息
+     * @return
+     */
+    @Override
+    public Map<String, List> getToDo() {
+        List<OrderDishVO> waitToCook = orderDishDao.getToDo(DishStatus.WAIT_TO_COOK.getCode());
+        List<OrderDishVO> cooking = orderDishDao.getToDo(DishStatus.COOKING.getCode());
+        List<OrderDishVO> waitToServe = orderDishDao.getToDo(DishStatus.WAIT_TO_SERVE.getCode());
+        Map<String,List> map = new HashMap<>();
+        map.put("waitToCook",waitToCook);
+        map.put("cooking",cooking);
+        map.put("waitToServe",waitToServe);
+        return map;
     }
 }

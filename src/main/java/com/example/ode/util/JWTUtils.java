@@ -61,9 +61,23 @@ public class JWTUtils {
         try {
             Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            // 附带openId信息
+            // 附带id信息
             return JWT.create()
                     .withClaim("id", id)
+                    .withExpiresAt(date)
+                    .sign(algorithm);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String sign(String openId) {
+        try {
+            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            // 附带openId信息
+            return JWT.create()
+                    .withClaim("openId", openId)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {

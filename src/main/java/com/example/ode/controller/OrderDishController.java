@@ -8,10 +8,7 @@ import com.example.ode.common.Result;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.ode.entity.OrderDishEntity;
 import com.example.ode.service.OrderDishService;
@@ -45,6 +42,12 @@ public class OrderDishController {
     @RequestMapping("/getTop5Dishes")
     public Result getTop5Dishes(){
         return Result.success(orderDishService.getTop5Dishes());
+    }
+
+    @GetMapping("/getToDo")
+    @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN","COOK"})
+    public Result getToDo(){
+        return Result.success(orderDishService.getToDo());
     }
 
 }

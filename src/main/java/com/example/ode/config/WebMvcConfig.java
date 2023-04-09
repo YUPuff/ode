@@ -13,6 +13,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private LoginHandler loginHandler;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(loginHandler);
+        registry.addInterceptor(loginHandler);
     }
 }

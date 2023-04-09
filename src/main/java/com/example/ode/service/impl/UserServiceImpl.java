@@ -17,6 +17,7 @@ import com.example.ode.service.RecommendService;
 import com.example.ode.service.WxService;
 import com.example.ode.util.EncryptUtils;
 import com.example.ode.util.JWTUtils;
+import com.example.ode.vo.AdminVO;
 import com.example.ode.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -109,8 +110,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      */
     @Override
     public void loginForToken(UserVO userVO) {
-        String token = JWTUtils.sign(userVO.getId());
-//        redisTemplate.opsForValue().set(RedisConstants.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
+        String token = "";
+        if(userVO instanceof AdminVO)
+            token = JWTUtils.sign(userVO.getId());
+        else
+            token = JWTUtils.sign(userVO.getOpenId());
+        redisTemplate.opsForValue().set(RedisConstants.TOKEN+token,JSON.toJSONString(userVO),7,TimeUnit.DAYS);
         userVO.setToken(token);
     }
 

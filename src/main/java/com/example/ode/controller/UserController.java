@@ -1,9 +1,11 @@
 package com.example.ode.controller;
 
 
+import com.example.ode.annotation.NoAuth;
 import com.example.ode.common.Result;
 import com.example.ode.dto.user.UserSearch;
 import com.example.ode.model.WXAuth;
+import com.example.ode.service.AdminService;
 import com.example.ode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +25,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AdminService adminService;
+
     @RequestMapping("/login")
+    @NoAuth
     public Result login(@RequestBody WXAuth wxAuth){
         return Result.success(userService.login(wxAuth));
     }
@@ -41,8 +47,9 @@ public class UserController {
     }
 
     @RequestMapping("/logout")
-    public Result logout(){
-        return null;
+    public Result logout(@RequestHeader("token")String token){
+        adminService.logout(token);
+        return Result.success();
     }
 
 }

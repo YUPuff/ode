@@ -1,10 +1,12 @@
 package com.example.ode.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
+import com.example.ode.constant.RedisConstants;
 import com.example.ode.constant.ResultConstants;
 import com.example.ode.dao.AdminDao;
 import com.example.ode.dto.admin.AdminIns;
@@ -18,6 +20,7 @@ import com.example.ode.enums.OrderStatus;
 import com.example.ode.enums.Role;
 import com.example.ode.service.OrderService;
 import com.example.ode.service.UserService;
+import com.example.ode.util.EncryptUtils;
 import com.example.ode.util.LocalDateTimeUtils;
 import com.example.ode.util.ObjectUtils;
 import com.example.ode.vo.AdminVO;
@@ -34,6 +37,8 @@ import com.example.ode.service.AdminService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.apache.shiro.SecurityUtils.getSubject;
 
 
 @Service("adminService")
@@ -61,7 +66,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         if (entity == null){
             entity = new AdminEntity();
             entity.setName(ins.getUsername());
-            entity.setPassword(ins.getPassword());
+            entity.setPassword(EncryptUtils.MD5EncryptMethod(ins.getPassword()));
             adminDao.insert(entity);
             return;
         }
@@ -87,6 +92,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
         BeanUtils.copyProperties(entity,adminVO);
         userService.loginForToken(adminVO);
         return adminVO;
+    }
+
+    @Override
+    public void logout(String token) {
+        getSubject().logout();
+        redisTemplate.delete(RedisConstants.TOKEN+token);
     }
 
 
@@ -155,9 +166,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     @Override
     public AdminVO getAdminByToken(String token) {
-        return getOneAdmin(2L);
-//        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
-//        return JSON.parseObject(json,AdminVO.class);
+//        return getOneAdmin(2L);
+        String json = redisTemplate.opsForValue().get(RedisConstants.TOKEN+token);
+        return JSON.parseObject(json,AdminVO.class);
     }
 
     /**

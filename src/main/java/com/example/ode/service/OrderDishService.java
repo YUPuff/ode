@@ -18,5 +18,7 @@ public interface OrderDishService extends IService<OrderDishEntity> {
     void cancelDish(Long id);
 
     List<DishVO> getTop5Dishes();
+
+    Map<String,List> getToDo();
 }
 

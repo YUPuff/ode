@@ -30,11 +30,11 @@ public class CustomRealm extends AuthorizingRealm {
     /**
      * 必须重写此方法，不然会报错
      */
-//    @Override
-//    public boolean supports(AuthenticationToken token) {
-//        System.out.println("进入了CustomRealm 中的supports，判断当前拿到的token是不是自定义的token类型");
-//        return token instanceof JWTToken;
-//    }
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        System.out.println("进入了CustomRealm 中的supports，判断当前拿到的token是不是自定义的token类型");
+        return token instanceof JWTToken;
+    }
 
     /**
      * 用于进行身份认证，即验证用户名和密码是否正确。

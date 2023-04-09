@@ -27,6 +27,11 @@ public class OrderDishVO {
      * 菜品名
      */
     private String name;
+
+    /**
+     * 桌号
+     */
+    private Long tableId;
     /**
      * 价格
      */

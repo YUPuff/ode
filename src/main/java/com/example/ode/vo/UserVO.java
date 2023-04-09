@@ -22,6 +22,9 @@ public class UserVO {
     @ApiModelProperty(value = "自动生成的id")
     private Long id;
 
+    @ApiModelProperty(value = "小程序唯一标识")
+    private String openId;
+
     /**
      * 用户名
      */

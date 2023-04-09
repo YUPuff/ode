@@ -6,6 +6,7 @@ import com.example.ode.common.MyRecommender;
 import com.example.ode.constant.RecommenderConstants;
 import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.dish.DishDTO;
+import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.UserEntity;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderDishService;
@@ -57,17 +58,19 @@ public class RecommendServiceImpl extends ServiceImpl<RecommendDao, RecommendEnt
      */
 
     @Override
-    public List<DishVO> recommend(Long userId) throws Exception {
+    public List recommend(Long userId) throws Exception {
         // 检验用户是否存在
         UserEntity user = userService.getById(userId);
         if (user == null)
             throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
 
         // 判断用户是否是新用户
-        RecommendEntity recommendEntity = recommendDao.selectOne(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getUserId, userId));
-        if (recommendEntity == null)
+//        RecommendEntity recommendEntity = recommendDao.selectOne(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getUserId, userId));
+//        if (recommendEntity == null)
+//            return orderDishService.getTop5Dishes();
+        Long number = recommendDao.selectCount(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getUserId, userId));
+        if (number.equals(0))
             return orderDishService.getTop5Dishes();
-
         // 1. 创建带有数据模型的自定义实体对象
         MyRecommender myRecommender = MyRecommender.build();
         // 2. 根据dataModel和指定的相似度量方法(谷本系数)生成用户相似度，并创建基于用户的推荐生成器(不完整)
@@ -78,9 +81,11 @@ public class RecommendServiceImpl extends ServiceImpl<RecommendDao, RecommendEnt
         MyRecommender.CommonRecommender commonRecommender = userBaseRecommender.getCommonRecommender(false);
         // 5. 生成推荐
         List<RecommendedItem> recommend = commonRecommender.recommend(userId, 10);
-        List<DishVO> dishes = new ArrayList<>();
+        List<DishEntity> dishes = new ArrayList<>();
         for (RecommendedItem recommendedItem : recommend) {
-            DishVO dish = dishService.getOneDish(recommendedItem.getItemID());
+            DishEntity dish = dishService.getById(recommendedItem.getItemID());
+            if (dish.getType() == 10)
+                continue;
             dishes.add(dish);
         }
         return dishes;

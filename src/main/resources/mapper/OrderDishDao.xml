@@ -24,6 +24,15 @@
         ORDER BY total DESC
         LIMIT 5
     </select>
+    <select id="getToDo" resultType="com.example.ode.vo.OrderDishVO">
+        SELECT od.id id, o.table_id tableId,d.name name,od.amount amount,od.status status
+        FROM t_order_dish od
+            INNER JOIN t_order o ON od.order_id = o.id
+            INNER join t_dish d ON od.dish_id = d.id
+        WHERE od.status = #{status}
+        ORDER BY od.add_time ASC
+        LIMIT 10
+    </select>
 
 
 </mapper>

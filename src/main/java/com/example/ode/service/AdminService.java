@@ -21,6 +21,8 @@ public interface AdminService extends IService<AdminEntity> {
 
     AdminVO login(AdminIns ins);
 
+    void logout(String token);
+
     void update(AdminUpd upd);
 
     MyPage<AdminVO> getAdmins(AdminSearch search);

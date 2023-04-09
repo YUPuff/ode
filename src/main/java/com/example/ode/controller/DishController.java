@@ -6,6 +6,7 @@ import com.example.ode.common.Result;
 import com.example.ode.dto.dish.DishIns;
 import com.example.ode.dto.dish.DishSearch;
 import com.example.ode.dto.dish.DishUpd;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -66,6 +67,7 @@ public class DishController {
 
 
     @RequestMapping("/upload")
+    @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN"})
     public Result uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
         //获取上传的文件的文件名
         String fileName = file.getOriginalFilename();
