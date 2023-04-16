@@ -87,11 +87,11 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
                 .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinPrice())),DishEntity::getPrice,search.getMinPrice())
                 .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxPrice())),DishEntity::getPrice,search.getMaxPrice())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getType())),DishEntity::getType,search.getType()));
-        List<DishVO> records = dishPage.getRecords();
-        for (DishVO record : records) {
-            record.setComments(commentService.getCommentCount(record.getId()));
-        }
-        dishPage.setRecords(records);
+//        List<DishVO> records = dishPage.getRecords();
+//        for (DishVO record : records) {
+//            record.setComments(commentService.getCommentCount(record.getId()));
+//        }
+//        dishPage.setRecords(records);
         MyPage<DishVO> myPage = MyPage.createPage(dishPage);
         return myPage;
     }

@@ -25,9 +25,14 @@ public class DishVO {
     private String pic;
 
     /**
-     * 菜品原料
+     * 菜品简介
      */
     private String intro;
+
+    /**
+     * 菜品详细介绍
+     */
+    private String detail;
 
     /**
      * 菜品评论数

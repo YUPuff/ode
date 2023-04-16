@@ -64,10 +64,10 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
             orderService.updateStatus(order.getId());
         else if (status == DishStatus.WAIT_TO_SERVE.getCode()){
             // 查询当前订单是否还有未完成的菜品
-            OrderDishEntity orderDishEntity = orderDishDao.selectOne(new LambdaQueryWrapper<OrderDishEntity>()
+             Long count = orderDishDao.selectCount(new LambdaQueryWrapper<OrderDishEntity>()
                     .lt(OrderDishEntity::getStatus, DishStatus.FINISHED.getCode())
                     .eq(OrderDishEntity::getOrderId, entity.getOrderId()));
-            if (orderDishEntity == null) orderService.updateStatus(order.getId());
+            if (count.equals(0L)) orderService.updateStatus(order.getId());
         }
     }
 

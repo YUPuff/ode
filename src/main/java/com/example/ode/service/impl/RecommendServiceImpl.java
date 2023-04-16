@@ -63,17 +63,13 @@ public class RecommendServiceImpl extends ServiceImpl<RecommendDao, RecommendEnt
         UserEntity user = userService.getById(userId);
         if (user == null)
             throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
-
         // 判断用户是否是新用户
-//        RecommendEntity recommendEntity = recommendDao.selectOne(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getUserId, userId));
-//        if (recommendEntity == null)
-//            return orderDishService.getTop5Dishes();
         Long number = recommendDao.selectCount(new LambdaQueryWrapper<RecommendEntity>().eq(RecommendEntity::getUserId, userId));
         if (number.equals(0))
             return orderDishService.getTop5Dishes();
         // 1. 创建带有数据模型的自定义实体对象
         MyRecommender myRecommender = MyRecommender.build();
-        // 2. 根据dataModel和指定的相似度量方法(谷本系数)生成用户相似度，并创建基于用户的推荐生成器(不完整)
+        // 2. 根据dataModel和指定的相似度量方法生成用户相似度，并创建基于用户的推荐生成器(不完整)
         MyRecommender.UserBaseRecommender userBaseRecommender = myRecommender.getUserBaseRecommender(RecommenderConstants.SIMILARITY_CITY_BLOCK);
         // 3. 根据dataModel和similarity生成用户邻居，完善推荐生成器
         userBaseRecommender.getNearestUserNeighborhood(neighbor);
@@ -84,8 +80,6 @@ public class RecommendServiceImpl extends ServiceImpl<RecommendDao, RecommendEnt
         List<DishEntity> dishes = new ArrayList<>();
         for (RecommendedItem recommendedItem : recommend) {
             DishEntity dish = dishService.getById(recommendedItem.getItemID());
-            if (dish.getType() == 10)
-                continue;
             dishes.add(dish);
         }
         return dishes;

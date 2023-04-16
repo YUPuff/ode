@@ -177,7 +177,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     @Override
     public Map<String, Object> getStatistics() {
-        Long admin = adminDao.selectCount(new LambdaQueryWrapper<>());
+        Long admin = adminDao.selectCount(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getIsVal,IsVal.VAL.getCode()));
         // 本周开始时间
         Date weekStart = LocalDateTimeUtils.convertToDate(LocalDateTimeUtils.weekStartTime());
         // 本周结束时间

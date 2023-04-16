@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
 import com.example.ode.constant.ResultConstants;
+import com.example.ode.constant.TypeConstants;
 import com.example.ode.dto.dish.DishDTO;
 import com.example.ode.dto.order.OrderDTO;
 import com.example.ode.dto.order.OrderIns;
@@ -60,7 +61,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         UserEntity user = userService.getById(ins.getUserId());
         if (user == null)
             throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
-
         OrderEntity orderEntity = new OrderEntity();
         BeanUtils.copyProperties(ins,orderEntity);
         // 先插入订单表以获取生成的订单id
@@ -82,6 +82,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             orderDishService.save(orderDishEntity);
 
             // 将用户和菜品关系更新到推荐表中
+                // 米饭类不加入
+            if (entity.getType() == TypeConstants.RICE)
+                continue;
                 // 判断用户之前是否点过该菜品
             LambdaQueryWrapper<RecommendEntity> wrapper = new LambdaQueryWrapper<RecommendEntity>()
                     .eq(RecommendEntity::getUserId, ins.getUserId())
