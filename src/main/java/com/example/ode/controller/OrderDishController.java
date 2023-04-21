@@ -5,6 +5,8 @@ import java.util.Map;
 
 
 import com.example.ode.common.Result;
+import com.example.ode.constant.WebSocketConstants;
+import com.example.ode.service.impl.WebSocketService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +32,14 @@ public class OrderDishController {
     @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN","COOK"})
     public Result updateStatus(@PathVariable("id") Long id){
         orderDishService.updateStatus(id);
+        WebSocketService.sendAllMessage(WebSocketConstants.UPDATE_DISH_STATUS);
         return Result.success();
     }
 
     @RequestMapping("/cancel/{id}")
     public Result cancel(@PathVariable("id")Long id){
         orderDishService.cancelDish(id);
+        WebSocketService.sendAllMessage(WebSocketConstants.CANCEL);
         return Result.success();
     }
 

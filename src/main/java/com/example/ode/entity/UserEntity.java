@@ -3,9 +3,8 @@ package com.example.ode.entity;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import com.example.ode.common.WxUserInfo;
+import com.example.ode.model.WxUserInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

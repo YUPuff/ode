@@ -1,4 +1,4 @@
-package com.example.ode.common;
+package com.example.ode.model;
 
 import lombok.Data;
 

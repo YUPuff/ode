@@ -1,4 +1,4 @@
-package com.example.ode.common;
+package com.example.ode.model;
 
 import com.example.ode.vo.UserVO;
 

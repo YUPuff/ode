@@ -3,7 +3,7 @@ package com.example.ode.handler;
 import com.alibaba.fastjson.JSON;
 import com.example.ode.annotation.NoAuth;
 import com.example.ode.common.Result;
-import com.example.ode.common.UserThreadLocal;
+import com.example.ode.model.UserThreadLocal;
 import com.example.ode.constant.RedisConstants;
 import com.example.ode.util.JWTUtils;
 import com.example.ode.vo.UserVO;

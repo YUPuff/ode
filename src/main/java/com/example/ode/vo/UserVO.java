@@ -1,12 +1,9 @@
 package com.example.ode.vo;
 
-import com.example.ode.common.WxUserInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * @ProjectName: project1

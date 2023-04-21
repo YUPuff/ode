@@ -8,9 +8,11 @@ import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.Result;
+import com.example.ode.constant.WebSocketConstants;
 import com.example.ode.dto.order.OrderDTO;
 import com.example.ode.dto.order.OrderIns;
 import com.example.ode.dto.order.OrderSearch;
+import com.example.ode.service.impl.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.annotation.Validated;
@@ -38,12 +40,14 @@ public class OrderController {
     @PostMapping("/add")
     public Result add(@Validated @RequestBody OrderIns ins){
         orderService.add(ins);
+        WebSocketService.sendAllMessage(WebSocketConstants.NEW_ORDER);
         return Result.success();
     }
 
     @RequestMapping("/cancel/{id}")
     public Result cancel(@PathVariable("id")Long id){
         orderService.cancelOrder(id);
+        WebSocketService.sendAllMessage(WebSocketConstants.CANCEL);
         return Result.success();
     }
 

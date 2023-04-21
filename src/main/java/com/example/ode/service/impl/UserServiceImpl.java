@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
-import com.example.ode.common.WxUserInfo;
+import com.example.ode.model.WxUserInfo;
 import com.example.ode.constant.RedisConstants;
 import com.example.ode.constant.ResultConstants;
 import com.example.ode.dto.user.UserSearch;
@@ -34,7 +34,6 @@ import com.example.ode.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 

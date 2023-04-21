@@ -2,20 +2,17 @@ package com.example.ode.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.ode.common.BusinessException;
-import com.example.ode.common.MyRecommender;
+import com.example.ode.model.MyRecommender;
 import com.example.ode.constant.RecommenderConstants;
 import com.example.ode.constant.ResultConstants;
-import com.example.ode.dto.dish.DishDTO;
 import com.example.ode.entity.DishEntity;
 import com.example.ode.entity.UserEntity;
 import com.example.ode.service.DishService;
 import com.example.ode.service.OrderDishService;
 import com.example.ode.service.UserService;
-import com.example.ode.vo.DishVO;
 import com.example.ode.vo.RecommendVO;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
-import org.apache.mahout.common.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +23,7 @@ import com.example.ode.entity.RecommendEntity;
 import com.example.ode.service.RecommendService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service("recommendService")

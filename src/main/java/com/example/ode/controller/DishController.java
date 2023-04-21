@@ -2,6 +2,7 @@ package com.example.ode.controller;
 
 
 
+import com.example.ode.annotation.NoAuth;
 import com.example.ode.common.Result;
 import com.example.ode.dto.dish.DishIns;
 import com.example.ode.dto.dish.DishSearch;
@@ -67,8 +68,8 @@ public class DishController {
 
 
     @RequestMapping("/upload")
-    @RequiresRoles(logical = Logical.OR, value = {"WAITER", "ADMIN"})
-    public Result uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
+    @NoAuth
+    public Result uploadFile(MultipartFile file) throws IOException {
         //获取上传的文件的文件名
         String fileName = file.getOriginalFilename();
         //处理文件重名问题
@@ -78,16 +79,18 @@ public class DishController {
         //获取服务器中photo目录的路径
 //        ServletContext servletContext = session.getServletContext();
 //        String photoPath = servletContext.getRealPath("photo");
-        String path = request.getServletContext().getRealPath("/photo/");
-        File newFile = new File(path);
+        String realPath = "/usr/project/photo/";
+        String reflectPath = "http://43.143.29.193:8080/img/";
+        File newFile = new File(realPath);
         // 判断路径下目录是否存在，不存在则创建
         if(!newFile.exists()){
             newFile.mkdir();
         }
-        String finalPath = path + fileName;
+        String filePath = realPath + fileName;
+        String visitPath = reflectPath + fileName;
         //实现上传功能
-        file.transferTo(new File(finalPath));
+        file.transferTo(new File(filePath));
         System.out.println("success");
-        return Result.success(finalPath);
+        return Result.success(visitPath);
     }
 }
