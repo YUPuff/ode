@@ -67,7 +67,8 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
              Long count = orderDishDao.selectCount(new LambdaQueryWrapper<OrderDishEntity>()
                     .lt(OrderDishEntity::getStatus, DishStatus.FINISHED.getCode())
                     .eq(OrderDishEntity::getOrderId, entity.getOrderId()));
-            if (count.equals(0L)) orderService.updateStatus(order.getId());
+            if (count.equals(0L))
+                orderService.updateStatus(order.getId());
         }
     }
 
@@ -87,10 +88,13 @@ public class OrderDishServiceImpl extends ServiceImpl<OrderDishDao, OrderDishEnt
             throw new BusinessException(ResultConstants.ORDER_DISH_CANT_EXCEPTION);
         entity.setStatus(DishStatus.CANCELED.getCode());
         orderDishDao.updateById(entity);
-        // 如果当前订单只有此菜品，则订单状态变为“已取消”
+        // 如果当前订单中所有菜品状态都是已取消，则订单状态变为“已取消”
         Long orderId = entity.getOrderId();
-        List<OrderDishEntity> entities = orderDishDao.selectList(new LambdaQueryWrapper<OrderDishEntity>().eq(OrderDishEntity::getOrderId, orderId));
-        if (entities.size() == 1){
+        Long dish_total = orderDishDao.selectCount(new LambdaQueryWrapper<OrderDishEntity>()
+                .eq(OrderDishEntity::getOrderId, orderId));
+        Long cancel_total = orderDishDao.selectCount(new LambdaQueryWrapper<OrderDishEntity>()
+                .eq(OrderDishEntity::getOrderId, orderId).eq(OrderDishEntity::getStatus,DishStatus.CANCELED.getCode()));
+        if (dish_total.equals(cancel_total)){
             orderService.cancelOrder(orderId);
         }
         // 从总订单中删除当前菜品金额
