@@ -23,6 +23,7 @@ import com.example.ode.service.UserService;
 import com.example.ode.util.EncryptUtils;
 import com.example.ode.util.LocalDateTimeUtils;
 import com.example.ode.util.ObjectUtils;
+import com.example.ode.util.RSACryptUtils;
 import com.example.ode.vo.AdminVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -56,12 +57,42 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Override
+    public Map<String, String> getKeys() {
+        Map<String, String> map = RSACryptUtils.getKeys();
+        String privateKey = map.get("privateKey");
+        String publicKey = map.get("publicKey");
+        String uuid = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(uuid,privateKey);
+        Map<String,String> res = new HashMap<>();
+        res.put("uuid",uuid);
+        res.put("publicKey",publicKey);
+        return res;
+    }
+
+    public void decrypt(AdminIns ins){
+        String uuId = ins.getUuid();
+        // 根据UUID获取私钥
+        String privateKeyStr = redisTemplate.opsForValue().get(uuId);
+        //删除缓存
+        redisTemplate.delete(uuId);
+        // 根据私钥解密
+        String password = null;
+        try {
+            password = RSACryptUtils.decrypt(RSACryptUtils.loadPrivateKey(privateKeyStr),RSACryptUtils.strToBase64(ins.getPassword()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ins.setPassword(password);
+    }
+
     /**
      * 员工注册
      * @param ins
      */
     @Override
-    public void signup(AdminIns ins) {
+    public void signup(AdminIns ins){
+        decrypt(ins);
         AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getUsername()));
         if (entity == null){
             entity = new AdminEntity();
@@ -83,9 +114,10 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, AdminEntity> impleme
      */
     @Override
     public AdminVO login(AdminIns ins) {
+        decrypt(ins);
         AdminEntity entity = adminDao.selectOne(new LambdaQueryWrapper<AdminEntity>().eq(AdminEntity::getName,ins.getUsername()));
         verify(entity);
-        if (!ins.getPassword().equals(entity.getPassword())){
+        if (!EncryptUtils.MD5EncryptMethod(ins.getPassword()).equals(entity.getPassword())){
             throw new BusinessException("密码错误，请重试！");
         }
         AdminVO adminVO = new AdminVO();

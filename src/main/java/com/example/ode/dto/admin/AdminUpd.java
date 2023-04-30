@@ -28,12 +28,6 @@ public class AdminUpd{
     @Length(message = "用户名不能超过{max}个字符",max = 30)
     private String name;
 
-    /**
-     * 密码
-     */
-    @Length(message = "密码不能超过{max}个字符",max = 30)
-    private String password;
-
 
     /**
      * 角色（0：管理员，1：服务员，2：后厨）

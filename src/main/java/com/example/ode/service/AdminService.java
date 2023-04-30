@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public interface AdminService extends IService<AdminEntity> {
 
+    Map<String,String> getKeys();
+
     void signup(AdminIns ins);
 
     AdminVO login(AdminIns ins);

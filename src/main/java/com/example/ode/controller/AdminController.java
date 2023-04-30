@@ -28,6 +28,12 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @GetMapping("/getKeys")
+    @NoAuth
+    public Result getKeys(){
+        return Result.success(adminService.getKeys());
+    }
+
     @PostMapping("/signup")
     @NoAuth
     public Result signup(@Validated @RequestBody AdminIns ins){
