@@ -126,9 +126,8 @@ public class DishServiceImpl extends ServiceImpl<DishDao, DishEntity> implements
      * @param typeId
      */
     private void verifyTypeExist(Integer typeId){
-        TypeEntity one = typeService.getOne(new LambdaQueryWrapper<TypeEntity>()
-                .eq(TypeEntity::getId, typeId));
-        if (one == null)
+        TypeEntity type = typeService.getById(typeId);
+        if (type == null)
             throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
     }
 

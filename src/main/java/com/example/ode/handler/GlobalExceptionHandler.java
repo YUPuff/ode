@@ -38,4 +38,14 @@ public class GlobalExceptionHandler {
     public Result businessExceptionHandler(BusinessException exception){
         return Result.failure(exception.getMessage());
     }
+
+    /**
+     * 捕捉全局异常
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    public Result exceptionHandler(Exception exception){
+        return Result.failure("出错了！即将刷新页面");
+    }
 }

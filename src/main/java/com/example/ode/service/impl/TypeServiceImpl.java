@@ -22,6 +22,8 @@ import com.example.ode.dao.TypeDao;
 import com.example.ode.entity.TypeEntity;
 import com.example.ode.service.TypeService;
 
+import java.util.List;
+
 
 @Service("typeService")
 public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements TypeService {
@@ -80,8 +82,8 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
         if (entity == null)
             throw new BusinessException(ResultConstants.TYPE_NO_EXIST_EXCEPTION);
         // 验证该分类下没有菜品
-        DishEntity one = dishService.getOne(new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType, id));
-        if (one != null)
+        List<DishEntity> list = dishService.list(new LambdaQueryWrapper<DishEntity>().eq(DishEntity::getType, id));
+        if (list.size()>0)
             throw new BusinessException(ResultConstants.TYPE_HAS_EXCEPTION);
         typeDao.deleteById(id);
     }
@@ -102,7 +104,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeDao, TypeEntity> implements
     }
 
     /**
-     * 验证分类代号和分类名是否同时具有唯一性
+     * 验证分类名是否具有唯一性
      * @param ins
      */
     private void verify(TypeIns ins){

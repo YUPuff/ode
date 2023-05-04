@@ -4,6 +4,7 @@ package com.example.ode;
 import com.example.ode.model.MyRecommender;
 import com.example.ode.constant.RecommenderConstants;
 import com.example.ode.service.RecommendService;
+import com.example.ode.util.EncryptUtils;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,4 +91,10 @@ class OdeApplicationTests {
 //            System.out.println(recommendedItem);
 //        }
 //    }
+
+    @Test
+    public void test(){
+        String s = EncryptUtils.MD5EncryptMethod("123123");
+        System.out.println(s);
+    }
 }

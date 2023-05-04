@@ -89,6 +89,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             LambdaQueryWrapper<RecommendEntity> wrapper = new LambdaQueryWrapper<RecommendEntity>()
                     .eq(RecommendEntity::getUserId, ins.getUserId())
                     .eq(RecommendEntity::getDishId, dish.getId());
+
             RecommendEntity recommendEntity = recommendService.getOne(wrapper);
             if (recommendEntity == null){
                 // 用户从未点过该菜品，新增记录

@@ -18,6 +18,11 @@ public class DishVO {
      */
     private BigDecimal price;
 
+    /**
+     * 菜品分类
+     */
+    private Integer type;
+
 
     /**
      * 图片路径
@@ -38,4 +43,9 @@ public class DishVO {
      * 菜品评论数
      */
     private Map<String,Long> comments;
+
+    /**
+     * 销量
+     */
+    private Integer total;
 }
