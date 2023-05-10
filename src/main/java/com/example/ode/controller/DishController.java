@@ -80,7 +80,7 @@ public class DishController {
 //        ServletContext servletContext = session.getServletContext();
 //        String photoPath = servletContext.getRealPath("photo");
         String realPath = "/usr/project/photo/";
-        String reflectPath = "http://43.143.29.193:8080/img/";
+        String reflectPath = "https://yilin.site:8081/img/";
         File newFile = new File(realPath);
         // 判断路径下目录是否存在，不存在则创建
         if(!newFile.exists()){
@@ -90,7 +90,6 @@ public class DishController {
         String visitPath = reflectPath + fileName;
         //实现上传功能
         file.transferTo(new File(filePath));
-        System.out.println("success");
         return Result.success(visitPath);
     }
 }

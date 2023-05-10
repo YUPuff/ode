@@ -3,6 +3,7 @@ package com.example.ode.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.ode.common.MyPage;
 import com.example.ode.dto.user.UserSearch;
+import com.example.ode.dto.user.UserUpd;
 import com.example.ode.entity.UserEntity;
 import com.example.ode.model.WXAuth;
 import com.example.ode.vo.UserVO;
@@ -22,5 +23,7 @@ public interface UserService extends IService<UserEntity> {
     MyPage<UserVO> getUser(UserSearch search);
 
     void delete(List<Long> ids);
+
+    void update(UserUpd upd);
 }
 

@@ -13,7 +13,6 @@
         <result property="isDel" column="is_del"/>
         <result property="addTime" column="add_time"/>
         <result property="updTime" column="upd_time"/>
-        <result property="extra" column="extra"/>
     </resultMap>
 
     <select id="selectMyPage" resultType="com.example.ode.vo.UserVO">

@@ -23,6 +23,11 @@ public class OrderSearch {
     private Long id;
 
     /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
      * 下单用户名
      */
     private String name;

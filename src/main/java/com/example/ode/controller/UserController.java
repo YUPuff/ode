@@ -4,9 +4,12 @@ package com.example.ode.controller;
 import com.example.ode.annotation.NoAuth;
 import com.example.ode.common.Result;
 import com.example.ode.dto.user.UserSearch;
+import com.example.ode.dto.user.UserUpd;
+import com.example.ode.entity.UserEntity;
 import com.example.ode.model.WXAuth;
 import com.example.ode.service.AdminService;
 import com.example.ode.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +37,12 @@ public class UserController {
         return Result.success(userService.login(wxAuth));
     }
 
+
+    @PostMapping("/upd")
+    public Result update(@Validated @RequestBody UserUpd upd){
+        userService.update(upd);
+        return Result.success();
+    }
 
     @RequestMapping("/del")
     public Result del(@RequestBody List<Long> ids){

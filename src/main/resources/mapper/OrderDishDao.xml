@@ -19,7 +19,7 @@
         SELECT d.id id,d.name name,d.price price,d.pic pic,d.intro intro,sum(od.amount) total
         FROM t_dish d
         INNER JOIN t_order_dish od ON d.id = od.dish_id
-        WHERE d.type != 10 AND od.add_time BETWEEN #{start} AND #{end}
+        WHERE d.type != 6 AND d.type != 7 AND d.type != 10 AND od.add_time BETWEEN #{start} AND #{end}
         GROUP BY od.dish_id
         ORDER BY total DESC
         LIMIT 5

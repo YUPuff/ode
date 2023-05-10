@@ -183,6 +183,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         IPage<OrderEntity> orderPage = orderDao.selectPage(page,new LambdaQueryWrapper<OrderEntity>()
                 .like(StringUtils.isNotBlank(ObjectUtils.toString(search.getId())),OrderEntity::getId,search.getId())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getTableId())),OrderEntity::getTableId,search.getTableId())
+                .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getUserId())),OrderEntity::getUserId,search.getUserId())
                 .eq(StringUtils.isNotBlank(ObjectUtils.toString(search.getStatus())),OrderEntity::getStatus,search.getStatus())
                 .ge(StringUtils.isNotBlank(ObjectUtils.toString(search.getMinTotal())),OrderEntity::getTotal,search.getMinTotal())
                 .le(StringUtils.isNotBlank(ObjectUtils.toString(search.getMaxTotal())),OrderEntity::getTotal,search.getMaxTotal())

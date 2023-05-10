@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.ode.common.BusinessException;
 import com.example.ode.common.MyPage;
+import com.example.ode.dto.user.UserUpd;
 import com.example.ode.model.WxUserInfo;
 import com.example.ode.constant.RedisConstants;
 import com.example.ode.constant.ResultConstants;
@@ -87,15 +88,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                 // 用户不存在，注册新用户
                 add(newUser);
             }else{
-                // 用户存在，更新用户信息
-                newUser.setId(oldUser.getId());
-                update(newUser);
+                newUser = oldUser;
             }
             // 登录
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(newUser,userVO);
             loginForToken(userVO);
-            System.out.println(userVO);
             return userVO;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -128,14 +126,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         // 插入新记录后，userEntity的id会自动赋值
     }
 
-    /**
-     * 根据用户openId，更新用户最新信息
-     * @param userEntity
-     * @return
-     */
-    public void update(UserEntity userEntity) {
-        userDao.updateById(userEntity);
-    }
 
 
     /**
@@ -170,4 +160,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         }
 
     }
+
+    @Override
+    public void update(UserUpd upd) {
+        UserEntity entity = userDao.selectById(upd.getId());
+        if (entity == null)
+            throw new BusinessException(ResultConstants.USER_NO_EXIST_EXCEPTION);
+        BeanUtils.copyProperties(upd,entity);
+        userDao.updateById(entity);
+    }
+
 }

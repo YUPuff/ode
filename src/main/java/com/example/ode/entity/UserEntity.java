@@ -58,12 +58,6 @@ public class UserEntity extends BaseEntity implements Serializable{
 	@TableLogic
 	private Integer isDel;
 
-	/**
-	 * 备用
-	 */
-	@ApiModelProperty(value = "备用")
-	private String extra;
-
 
 	public UserEntity(WxUserInfo userInfo){
 		this.openId = userInfo.getOpenId();
